@@ -17,7 +17,9 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-OTHER_FILES +=
+OTHER_FILES += \
+    launch.sh \
+    mini2440.skin/mini2440.skin
 
 RESOURCES += \
     res.qrc

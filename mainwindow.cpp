@@ -33,27 +33,31 @@ void MainWindow::TestOdometrie()
 {
     QMessageBox msgBox;
     msgBox.setText("Test odométrie.");
-    msgBox.exec();
 }
 
-void MainWindow::PowerQuit()
+void MainWindow::FileQuit()
 {
-    close();
     QApplication::exit();
 }
 
-void MainWindow::PowerRestart()
+void MainWindow::FileHalt()
 {
-    PowerQuit();
-    system("minigui &"); // TODO: -qws ?
+    QMessageBox msgBox;
+    msgBox.setText("Éteindre l'ARM ?");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    if(msgBox.exec() == QMessageBox::Ok)
+        system("halt");
 }
 
-void MainWindow::PowerHalt()
+void MainWindow::FileReboot()
 {
-    system("halt");
+    QMessageBox msgBox;
+    msgBox.setText("Redémarrer l'ARM ?");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    if(msgBox.exec() == QMessageBox::Ok)
+        system("reboot");
 }
 
-void MainWindow::PowerReboot()
-{
-    system("reboot");
+void  MainWindow::ResetPICs() {
+
 }

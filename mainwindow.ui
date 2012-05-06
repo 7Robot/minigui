@@ -10,18 +10,41 @@
     <height>240</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <family>DejaVu Sans</family>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Minigui</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
       <width>320</width>
-      <height>240</height>
+      <height>213</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="text">
      <string/>
@@ -30,6 +53,21 @@
      <pixmap resource="res.qrc">:/pics/plateau.png</pixmap>
     </property>
    </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>321</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -37,11 +75,11 @@
      <x>0</x>
      <y>0</y>
      <width>320</width>
-     <height>26</height>
+     <height>27</height>
     </rect>
    </property>
    <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -49,33 +87,82 @@
    <property name="minimumSize">
     <size>
      <width>0</width>
-     <height>26</height>
+     <height>27</height>
     </size>
    </property>
-   <widget class="QMenu" name="menuTest">
+   <widget class="QMenu" name="menuAsserv">
     <property name="title">
-     <string>Test</string>
+     <string>Asserv</string>
     </property>
-    <addaction name="actionTestOdometrie"/>
     <addaction name="actionTestMoteurs"/>
     <addaction name="actionTestCapteurs"/>
+    <addaction name="actionFwd_1m"/>
+    <addaction name="actionArri_re_1m"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuWifi">
+     <property name="title">
+      <string>Wifi</string>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="action7robot"/>
+     <addaction name="actionNet7_2"/>
+    </widget>
+    <addaction name="menuWifi"/>
+    <addaction name="actionReset_PICs"/>
     <addaction name="actionHalt"/>
     <addaction name="actionReboot"/>
-    <addaction name="separator"/>
-    <addaction name="actionRestart"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuOdo">
+    <property name="title">
+     <string>Odo</string>
+    </property>
+    <addaction name="actionSet_custom"/>
+    <addaction name="actionRouge"/>
+    <addaction name="actionSet_Violet"/>
+    <addaction name="actionMute"/>
+    <addaction name="actionUnmute"/>
+    <addaction name="actionRecalage"/>
+   </widget>
+   <widget class="QMenu" name="menuIA">
+    <property name="title">
+     <string>IA</string>
+    </property>
+    <addaction name="actionStart"/>
+    <addaction name="actionStop"/>
+    <addaction name="actionOutput"/>
+   </widget>
+   <widget class="QMenu" name="menuVue">
+    <property name="title">
+     <string>Vue</string>
+    </property>
+    <addaction name="actionChrono"/>
+    <addaction name="actionCapteurs"/>
+    <addaction name="actionPlateau"/>
+   </widget>
+   <widget class="QMenu" name="menuTourelle">
+    <property name="title">
+     <string>Tourelle</string>
+    </property>
+    <addaction name="actionOff"/>
+    <addaction name="actionOn"/>
+    <addaction name="actionMute_2"/>
+    <addaction name="actionUnmute_2"/>
+   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuTest"/>
+   <addaction name="menuAsserv"/>
+   <addaction name="menuOdo"/>
+   <addaction name="menuTourelle"/>
+   <addaction name="menuIA"/>
+   <addaction name="menuVue"/>
   </widget>
   <action name="actionTestMoteurs">
    <property name="text">
-    <string>Test moteurs</string>
+    <string>Rot 90°</string>
    </property>
   </action>
   <action name="actionTestOdometrie">
@@ -85,27 +172,142 @@
   </action>
   <action name="actionHalt">
    <property name="text">
-    <string>Halt ARM</string>
+    <string>Halt</string>
    </property>
   </action>
   <action name="actionReboot">
    <property name="text">
-    <string>Reboot ARM</string>
+    <string>Reboot</string>
    </property>
   </action>
   <action name="actionTestCapteurs">
    <property name="text">
-    <string>Test capteurs</string>
-   </property>
-  </action>
-  <action name="actionRestart">
-   <property name="text">
-    <string>Restart</string>
+    <string>Rot 360°</string>
    </property>
   </action>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionJhyg">
+   <property name="text">
+    <string>jhyg</string>
+   </property>
+  </action>
+  <action name="actionConnecter">
+   <property name="text">
+    <string>7robot</string>
+   </property>
+  </action>
+  <action name="actionNet7">
+   <property name="text">
+    <string>net7</string>
+   </property>
+  </action>
+  <action name="action7robot">
+   <property name="text">
+    <string>7robot</string>
+   </property>
+  </action>
+  <action name="actionNet7_2">
+   <property name="text">
+    <string>net7</string>
+   </property>
+  </action>
+  <action name="actionRouge">
+   <property name="text">
+    <string>Set Rouge</string>
+   </property>
+  </action>
+  <action name="actionSet_Violet">
+   <property name="text">
+    <string>Set Violet</string>
+   </property>
+  </action>
+  <action name="actionRecalage">
+   <property name="text">
+    <string>Recalage</string>
+   </property>
+  </action>
+  <action name="actionSet_custom">
+   <property name="text">
+    <string>Set custom</string>
+   </property>
+  </action>
+  <action name="actionFwd_1m">
+   <property name="text">
+    <string>Avant 50cm</string>
+   </property>
+  </action>
+  <action name="actionArri_re_1m">
+   <property name="text">
+    <string>Arrière 50cm</string>
+   </property>
+  </action>
+  <action name="actionReset_PICs">
+   <property name="text">
+    <string>Reset PICs</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="text">
+    <string>Start</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="text">
+    <string>Output</string>
+   </property>
+  </action>
+  <action name="actionMute">
+   <property name="text">
+    <string>Mute</string>
+   </property>
+  </action>
+  <action name="actionUnmute">
+   <property name="text">
+    <string>Unmute</string>
+   </property>
+  </action>
+  <action name="actionOn">
+   <property name="text">
+    <string>On</string>
+   </property>
+  </action>
+  <action name="actionOff">
+   <property name="text">
+    <string>Off</string>
+   </property>
+  </action>
+  <action name="actionMute_2">
+   <property name="text">
+    <string>Mute</string>
+   </property>
+  </action>
+  <action name="actionUnmute_2">
+   <property name="text">
+    <string>Unmute</string>
+   </property>
+  </action>
+  <action name="actionChrono">
+   <property name="text">
+    <string>Chronomètre</string>
+   </property>
+  </action>
+  <action name="actionCapteurs">
+   <property name="text">
+    <string>Capteurs</string>
+   </property>
+  </action>
+  <action name="actionPlateau">
+   <property name="text">
+    <string>Plateau</string>
    </property>
   </action>
  </widget>
@@ -118,7 +320,7 @@
    <sender>actionHalt</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>PowerHalt()</slot>
+   <slot>FileHalt()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -134,23 +336,7 @@
    <sender>actionReboot</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>PowerReboot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionRestart</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>PowerRestart()</slot>
+   <slot>FileReboot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -214,7 +400,7 @@
    <sender>actionQuit</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>PowerQuit()</slot>
+   <slot>FileQuit()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -231,9 +417,8 @@
   <slot>TestCapteurs()</slot>
   <slot>TestMoteurs()</slot>
   <slot>TestOdometrie()</slot>
-  <slot>PowerHalt()</slot>
-  <slot>PowerReboot()</slot>
-  <slot>PowerRestart()</slot>
-  <slot>PowerQuit()</slot>
+  <slot>FileHalt()</slot>
+  <slot>FileReboot()</slot>
+  <slot>FileQuit()</slot>
  </slots>
 </ui>
