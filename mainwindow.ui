@@ -31,7 +31,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="background">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -52,21 +52,6 @@
     <property name="pixmap">
      <pixmap resource="res.qrc">:/pics/plateau.png</pixmap>
     </property>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>321</width>
-      <height>211</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -91,6 +76,9 @@
     </size>
    </property>
    <widget class="QMenu" name="menuAsserv">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Asserv</string>
     </property>
@@ -103,32 +91,28 @@
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuWifi">
-     <property name="title">
-      <string>Wifi</string>
-     </property>
-     <addaction name="separator"/>
-     <addaction name="action7robot"/>
-     <addaction name="actionNet7_2"/>
-    </widget>
-    <addaction name="menuWifi"/>
-    <addaction name="actionReset_PICs"/>
-    <addaction name="actionHalt"/>
-    <addaction name="actionReboot"/>
+    <addaction name="actionBattery"/>
+    <addaction name="actionReset"/>
+    <addaction name="actionRestart"/>
     <addaction name="actionQuit"/>
+    <addaction name="actionReboot"/>
+    <addaction name="actionHalt"/>
    </widget>
    <widget class="QMenu" name="menuOdo">
     <property name="title">
      <string>Odo</string>
     </property>
-    <addaction name="actionSet_custom"/>
+    <addaction name="actionCustom"/>
     <addaction name="actionRouge"/>
-    <addaction name="actionSet_Violet"/>
-    <addaction name="actionMute"/>
-    <addaction name="actionUnmute"/>
+    <addaction name="actionViolet"/>
+    <addaction name="actionOdoMute"/>
+    <addaction name="actionOdoUnmute"/>
     <addaction name="actionRecalage"/>
    </widget>
    <widget class="QMenu" name="menuIA">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>IA</string>
     </property>
@@ -137,6 +121,9 @@
     <addaction name="actionOutput"/>
    </widget>
    <widget class="QMenu" name="menuVue">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Vue</string>
     </property>
@@ -145,13 +132,26 @@
     <addaction name="actionPlateau"/>
    </widget>
    <widget class="QMenu" name="menuTourelle">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
-     <string>Tourelle</string>
+     <string>Tour</string>
     </property>
     <addaction name="actionOff"/>
     <addaction name="actionOn"/>
     <addaction name="actionMute_2"/>
     <addaction name="actionUnmute_2"/>
+   </widget>
+   <widget class="QMenu" name="menuCmd">
+    <property name="title">
+     <string>Cmd</string>
+    </property>
+    <addaction name="actionCmd1"/>
+    <addaction name="actionCmd2"/>
+    <addaction name="actionCmd3"/>
+    <addaction name="actionCmd4"/>
+    <addaction name="actionCmd5"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAsserv"/>
@@ -159,15 +159,11 @@
    <addaction name="menuTourelle"/>
    <addaction name="menuIA"/>
    <addaction name="menuVue"/>
+   <addaction name="menuCmd"/>
   </widget>
   <action name="actionTestMoteurs">
    <property name="text">
     <string>Rot 90°</string>
-   </property>
-  </action>
-  <action name="actionTestOdometrie">
-   <property name="text">
-    <string>Test odométrie</string>
    </property>
   </action>
   <action name="actionHalt">
@@ -190,47 +186,28 @@
     <string>Quit</string>
    </property>
   </action>
-  <action name="actionJhyg">
-   <property name="text">
-    <string>jhyg</string>
-   </property>
-  </action>
-  <action name="actionConnecter">
-   <property name="text">
-    <string>7robot</string>
-   </property>
-  </action>
-  <action name="actionNet7">
-   <property name="text">
-    <string>net7</string>
-   </property>
-  </action>
-  <action name="action7robot">
-   <property name="text">
-    <string>7robot</string>
-   </property>
-  </action>
-  <action name="actionNet7_2">
-   <property name="text">
-    <string>net7</string>
-   </property>
-  </action>
   <action name="actionRouge">
    <property name="text">
     <string>Set Rouge</string>
    </property>
   </action>
-  <action name="actionSet_Violet">
+  <action name="actionViolet">
    <property name="text">
     <string>Set Violet</string>
    </property>
   </action>
   <action name="actionRecalage">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Recalage</string>
    </property>
   </action>
-  <action name="actionSet_custom">
+  <action name="actionCustom">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Set custom</string>
    </property>
@@ -245,7 +222,7 @@
     <string>Arrière 50cm</string>
    </property>
   </action>
-  <action name="actionReset_PICs">
+  <action name="actionReset">
    <property name="text">
     <string>Reset PICs</string>
    </property>
@@ -265,12 +242,12 @@
     <string>Output</string>
    </property>
   </action>
-  <action name="actionMute">
+  <action name="actionOdoMute">
    <property name="text">
     <string>Mute</string>
    </property>
   </action>
-  <action name="actionUnmute">
+  <action name="actionOdoUnmute">
    <property name="text">
     <string>Unmute</string>
    </property>
@@ -310,6 +287,60 @@
     <string>Plateau</string>
    </property>
   </action>
+  <action name="actionBattery">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pics/battery.png</normaloff>:/pics/battery.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mesurer</string>
+   </property>
+  </action>
+  <action name="actionRestart">
+   <property name="text">
+    <string>Restart</string>
+   </property>
+  </action>
+  <action name="actionCmd1">
+   <property name="text">
+    <string>cmd1</string>
+   </property>
+  </action>
+  <action name="actionCmd2">
+   <property name="text">
+    <string>cmd2</string>
+   </property>
+  </action>
+  <action name="actionCmd3">
+   <property name="text">
+    <string>cmd3</string>
+   </property>
+  </action>
+  <action name="actionCmd4">
+   <property name="text">
+    <string>cmd4</string>
+   </property>
+  </action>
+  <action name="actionCmd5">
+   <property name="text">
+    <string>cmd5</string>
+   </property>
+  </action>
+  <action name="actionCmd6">
+   <property name="text">
+    <string>cmd6</string>
+   </property>
+  </action>
+  <action name="actionCmd7">
+   <property name="text">
+    <string>cmd7</string>
+   </property>
+  </action>
+  <action name="actionCmd8">
+   <property name="text">
+    <string>cmd8</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -317,74 +348,10 @@
  </resources>
  <connections>
   <connection>
-   <sender>actionHalt</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>FileHalt()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionReboot</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>FileReboot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTestCapteurs</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>TestCapteurs()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTestMoteurs</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>TestMoteurs()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTestOdometrie</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>TestOdometrie()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -412,6 +379,214 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionBattery</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>FileBattery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionReset</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>FileReset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRestart</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>FileRestart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHalt</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>FileHalt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCmd1</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>Cmd1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCmd2</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>Cmd2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCmd3</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>Cmd3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCmd4</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>Cmd4()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCmd5</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>Cmd5()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRouge</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OdoRouge()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionViolet</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OdoViolet()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOdoMute</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OdoMute()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOdoUnmute</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OdoUnmute()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>TestCapteurs()</slot>
@@ -420,5 +595,17 @@
   <slot>FileHalt()</slot>
   <slot>FileReboot()</slot>
   <slot>FileQuit()</slot>
+  <slot>FileRestart()</slot>
+  <slot>FileBattery()</slot>
+  <slot>FileReset()</slot>
+  <slot>Cmd1()</slot>
+  <slot>Cmd2()</slot>
+  <slot>Cmd3()</slot>
+  <slot>Cmd4()</slot>
+  <slot>Cmd5()</slot>
+  <slot>OdoMute()</slot>
+  <slot>OdoUnmute()</slot>
+  <slot>OdoRouge()</slot>
+  <slot>OdoViolet()</slot>
  </slots>
 </ui>

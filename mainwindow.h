@@ -2,10 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTcpSocket>
 
 namespace Ui {
     class MainWindow;
 }
+
 
 class MainWindow : public QMainWindow
 {
@@ -14,19 +16,38 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    static char **Argv;
 
 public slots:
-    void TestMoteurs();
-    void TestOdometrie();
-    void TestCapteurs();
+    void FileBattery();
+    void FileReset();
+    void FileRestart();
     void FileQuit();
     void FileReboot();
     void FileHalt();
 
-    void ResetPICs();
+    void OdoMute();
+    void OdoUnmute();
+    void OdoRouge();
+    void OdoViolet();
+
+    void Cmd1();
+    void Cmd2();
+    void Cmd3();
+    void Cmd4();
+    void Cmd5();
+
+    void ReadIA();
+    void ReadCAN();
 
 private:
     Ui::MainWindow *ui;
+    QTcpSocket *SocketIA;
+    QTcpSocket *SocketCAN;
+
+    void ParseCAN(QByteArray line);
+    void WriteBackCAN(QByteArray line);
+    void RefreshRobot(int x, int y, int theta);
 };
 
 #endif // MAINWINDOW_H

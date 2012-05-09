@@ -3,3 +3,4 @@ Up=mini2440.png
 Down=mini2440.png
 Screen=40 45 320 240
 Areas=0
+HasMouseHover=false
