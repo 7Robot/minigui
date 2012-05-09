@@ -1,9 +1,14 @@
 # http://qt-project.org/quarterly/view/using_cmake_to_build_qt_projects
+# Ce fichier remplace le .pro pour PTX dist.
 
 find_package(Qt4 REQUIRED)
 
+# librairies (core & gui already included)
+set(QT_USE_QTNETWORK TRUE)
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include(${QT_USE_FILE})
+
 
 set(minigui_SOURCES   mainwindow.cpp main.cpp)
 set(minigui_HEADERS   mainwindow.h)
@@ -23,7 +28,6 @@ add_executable(minigui ${minigui_SOURCES} ${minigui_HEADERS_MOC}
 
 target_link_libraries(minigui ${QT_LIBRARIES})
 
-
 install(TARGETS minigui RUNTIME DESTINATION bin)
 install(FILES S99minigui DESTINATION /etc/rc.d
-	PERMISSIONS WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+        PERMISSIONS WORLD_READ WORLD_WRITE WORLD_EXECUTE)

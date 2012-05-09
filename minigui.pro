@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = minigui
 TEMPLATE = app
@@ -19,7 +19,8 @@ FORMS    += mainwindow.ui
 
 OTHER_FILES += \
     launch.sh \
-    mini2440.skin/mini2440.skin
+    mini2440.skin/mini2440.skin \
+    CMakeLists.txt
 
 RESOURCES += \
     res.qrc

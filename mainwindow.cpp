@@ -1,5 +1,6 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include <unistd.h>
 #include <QDebug>
 #include <QMessageBox>
 
@@ -40,17 +41,17 @@ void MainWindow::ReadCAN()
     if(!SocketCAN->canReadLine())
         return; // Not a full line yet.
 
-    MainWindow::ParseCAN(SocketCAN->readLine().trimmed());
+    MainWindow::ParseCAN(SocketCAN->readLine().trimmed().toUpper());
 }
 
 void MainWindow::ParseCAN(QByteArray line)
 {
     QList<QByteArray> tokens = line.split(' ');
 
-    if(tokens.size() == 5 && (line.startsWith("odo pos") || line.startsWith("odo set"))) {
+    if(tokens.size() == 5 && (line.startsWith("ODO POS") || line.startsWith("ODO SET"))) {
         RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
     }
-    else if(line.startsWith("turret answer")) {
+    else if(line.startsWith("TURRET ANSWER")) {
 
         // TODO: effacer les echos précédents ici.
 
@@ -61,7 +62,7 @@ void MainWindow::ParseCAN(QByteArray line)
             // TODO
         }
     }
-    else if(tokens.size() == 3 && line.startsWith("battery answer")) {
+    else if(tokens.size() == 3 && line.startsWith("BATTERY ANSWER")) {
         QByteArray voltage = tokens.at(2);
         voltage.append(" V");
         ui->actionBattery->setText(voltage);
@@ -97,12 +98,12 @@ void MainWindow::ReadIA()
 
 void  MainWindow::FileBattery()
 {
-    WriteBackCAN("battery request\n");
+    WriteBackCAN("BATTERY REQUEST\n");
 }
 
 void  MainWindow::FileReset()
 {
-    WriteBackCAN("reset\n");
+    WriteBackCAN("RESET\n");
 }
 
 char ** MainWindow::Argv; // Les arguments de main() à peu de chose près.
@@ -149,12 +150,12 @@ void MainWindow::FileHalt()
 
 void MainWindow::OdoMute()
 {
-    WriteBackCAN("odo mute\n");
+    WriteBackCAN("ODO MUTE\n");
 }
 
 void MainWindow::OdoUnmute()
 {
-    WriteBackCAN("odo unmute\n");
+    WriteBackCAN("odo unmute\n"); // TODO CAsssssssse !
 }
 
 void MainWindow::OdoRouge()

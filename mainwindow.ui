@@ -19,6 +19,7 @@
   <property name="font">
    <font>
     <family>DejaVu Sans</family>
+    <pointsize>6</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -293,7 +294,7 @@
      <normaloff>:/pics/battery.png</normaloff>:/pics/battery.png</iconset>
    </property>
    <property name="text">
-    <string>Mesurer</string>
+    <string>Batterie</string>
    </property>
   </action>
   <action name="actionRestart">
