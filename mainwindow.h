@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QTcpSocket>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 
 namespace Ui {
     class MainWindow;
@@ -54,6 +56,13 @@ private:
     Ui::MainWindow *ui;
     QTcpSocket *SocketIA;
     QTcpSocket *SocketCAN;
+
+    QGraphicsScene *scene;
+    QGraphicsPixmapItem *background;
+    QGraphicsPixmapItem *robot;
+    QGraphicsPathItem *echos[4];
+    static const qreal scale = 320. / 3000.;
+    static QPointF origin;
 
     void WriteIA(QByteArray line);
     void ParseIA(QByteArray line);

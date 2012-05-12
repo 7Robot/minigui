@@ -3,13 +3,38 @@
 #include <unistd.h>
 #include <QDebug>
 #include <QMessageBox>
+#include <QtCore/qmath.h>
+#include <QPen>
+#include <QBrush>
+#include <QGraphicsPathItem>
+#include <QPainterPath>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent, Qt::FramelessWindowHint),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    Vue(1);
+
+    Vue(2);
+
+
+    scene = new QGraphicsScene(0, 0, 320, 213, this);
+    background = scene->addPixmap(QPixmap(":/pics/plateau.png"));
+    robot = scene->addPixmap(QPixmap(":/pics/robot.png"));
+    robot->setTransformOriginPoint(21.5, 21.5);
+    robot->setVisible(false);
+
+    QPen pen = QPen(QColor(255, 0, 0));
+    pen.setWidth(4);
+    for(int i = 0; i < 4; i++) {
+        echos[i] = new QGraphicsPathItem(robot);
+        echos[i]->setPen(pen);
+        echos[i]->setPos(robot->transformOriginPoint());
+    }
+
+    ui->plateau->setScene(scene);
+
 
     SocketCAN = new QTcpSocket(this);
     SocketIA = new QTcpSocket(this);
@@ -32,12 +57,13 @@ MainWindow::~MainWindow()
 }
 
 
+QPointF MainWindow::origin(160, 106.5);
 void MainWindow::RefreshRobot(int x, int y, int theta)
 {
-    qDebug() << x << " " << y << " " << theta;
-    // TODO
+    robot->setVisible(true);
+    robot->setRotation(theta / 100);
+    robot->setPos(origin + QPointF(-x, y) * scale - robot->transformOriginPoint());
 }
-
 
 
 void MainWindow::WriteCAN(QByteArray line)
@@ -63,24 +89,30 @@ void MainWindow::ParseCAN(QByteArray line)
         RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
     }
     else if(line.startsWith("TURRET ANSWER")) {
+        for(int i = 0, j = 2; i < 3; i++) {
+            if(j + 1 < tokens.count()) {
+                qreal dist  = tokens.at(j++).toInt() * 10 * scale;
+                qreal angle = tokens.at(j++).toInt();
 
-        // TODO: effacer les echos précédents ici.
+                qreal span = 360. * 80. /* rayon apparent */ * scale / dist / 2 / 3.14159265f;
+                QRectF rect = QRectF(-dist, -dist, dist * 2, dist * 2);
 
-        for(int i = 2; i < tokens.count(); ) {
-            int dist = tokens.at(i++).toInt();
-            int angle = tokens.at(i++).toInt();
-            qDebug() << dist << " " << angle;
-            // TODO
+                QPainterPath path = QPainterPath();
+                path.arcMoveTo(rect, angle - span / 2);
+                path.arcTo(rect, angle - span / 2, span);
+                echos[i]->setPath(path);
+
+                echos[i]->setVisible(true);
+            }
+            else {
+                echos[i]->setVisible(false);
+            }
         }
     }
     else if(tokens.size() == 3 && line.startsWith("BATTERY ANSWER")) {
         QByteArray voltage = tokens.at(2);
         voltage.append(" V");
         ui->actionBattery->setText(voltage);
-    }
-    else {
-        // TODO textbox espion
-        qDebug() << "Unrecognized: " << line << endl;
     }
 
     // FIXME: dessiner asserv speed ?
@@ -165,12 +197,12 @@ void MainWindow::FileQuit()
 
 void MainWindow::OdoRouge()
 {
-    WriteCAN("ODO SET -750 1250 27000");
+    WriteCAN("ODO SET 1250 750 9000");
 }
 
 void MainWindow::OdoViolet()
 {
-    WriteCAN("ODO SET -750 -1250 9000");
+    WriteCAN("ODO SET -1250 750 27000");
 }
 
 void MainWindow::OdoRecalage()
@@ -234,7 +266,7 @@ void MainWindow::CalibUSdroite()
 
 void MainWindow::CalibUSback()
 {
-    WriteIA("CALIBRATE 3");
+    WriteIA("CALIBRATE 8");
 }
 
 
