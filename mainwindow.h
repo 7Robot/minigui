@@ -21,15 +21,17 @@ public:
 public slots:
     void FileBattery();
     void FileReset();
-    void FileRestart();
-    void FileQuit();
     void FileReboot();
     void FileHalt();
+    void FileRestart();
+    void FileQuit();
 
-    void OdoMute();
-    void OdoUnmute();
     void OdoRouge();
     void OdoViolet();
+    void OdoRecalage();
+    void OdoRequest();
+    void OdoMute();
+    void OdoUnmute();
 
     void Cmd1();
     void Cmd2();
@@ -37,17 +39,29 @@ public slots:
     void Cmd4();
     void Cmd5();
 
+    void CalibUSgauche();
+    void CalibUSdroite();
+    void CalibUSback();
+
     void ReadIA();
     void ReadCAN();
+
+    void VueMessages();
+    void VuePlateau();
+    void VueMatch();
 
 private:
     Ui::MainWindow *ui;
     QTcpSocket *SocketIA;
     QTcpSocket *SocketCAN;
 
+    void WriteIA(QByteArray line);
+    void ParseIA(QByteArray line);
+    void WriteCAN(QByteArray line);
     void ParseCAN(QByteArray line);
-    void WriteBackCAN(QByteArray line);
     void RefreshRobot(int x, int y, int theta);
+
+    void Vue(int vue);
 };
 
 #endif // MAINWINDOW_H

@@ -19,7 +19,7 @@
   <property name="font">
    <font>
     <family>DejaVu Sans</family>
-    <pointsize>6</pointsize>
+    <pointsize>9</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <widget class="QLabel" name="background">
+   <widget class="QLabel" name="plateau">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -53,6 +53,65 @@
     <property name="pixmap">
      <pixmap resource="res.qrc">:/pics/plateau.png</pixmap>
     </property>
+   </widget>
+   <widget class="QFrame" name="messages">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>320</width>
+      <height>220</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QTextBrowser" name="IABrowser"/>
+     </item>
+     <item>
+      <widget class="QTextBrowser" name="CANBrowser"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QFrame" name="match">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>320</width>
+      <height>220</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLCDNumber" name="chrono">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>-10</y>
+       <width>320</width>
+       <height>240</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="digitCount">
+      <number>2</number>
+     </property>
+     <property name="segmentStyle">
+      <enum>QLCDNumber::Flat</enum>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -86,7 +145,6 @@
     <addaction name="actionTestMoteurs"/>
     <addaction name="actionTestCapteurs"/>
     <addaction name="actionFwd_1m"/>
-    <addaction name="actionArri_re_1m"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -94,55 +152,24 @@
     </property>
     <addaction name="actionBattery"/>
     <addaction name="actionReset"/>
-    <addaction name="actionRestart"/>
-    <addaction name="actionQuit"/>
+    <addaction name="separator"/>
     <addaction name="actionReboot"/>
     <addaction name="actionHalt"/>
+    <addaction name="separator"/>
+    <addaction name="actionRestart"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuOdo">
     <property name="title">
      <string>Odo</string>
     </property>
-    <addaction name="actionCustom"/>
     <addaction name="actionRouge"/>
     <addaction name="actionViolet"/>
+    <addaction name="actionRecalage"/>
+    <addaction name="separator"/>
+    <addaction name="actionRequest"/>
     <addaction name="actionOdoMute"/>
     <addaction name="actionOdoUnmute"/>
-    <addaction name="actionRecalage"/>
-   </widget>
-   <widget class="QMenu" name="menuIA">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>IA</string>
-    </property>
-    <addaction name="actionStart"/>
-    <addaction name="actionStop"/>
-    <addaction name="actionOutput"/>
-   </widget>
-   <widget class="QMenu" name="menuVue">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Vue</string>
-    </property>
-    <addaction name="actionChrono"/>
-    <addaction name="actionCapteurs"/>
-    <addaction name="actionPlateau"/>
-   </widget>
-   <widget class="QMenu" name="menuTourelle">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>Tour</string>
-    </property>
-    <addaction name="actionOff"/>
-    <addaction name="actionOn"/>
-    <addaction name="actionMute_2"/>
-    <addaction name="actionUnmute_2"/>
    </widget>
    <widget class="QMenu" name="menuCmd">
     <property name="title">
@@ -154,13 +181,32 @@
     <addaction name="actionCmd4"/>
     <addaction name="actionCmd5"/>
    </widget>
+   <widget class="QMenu" name="menuCalib">
+    <property name="title">
+     <string>Calib</string>
+    </property>
+    <addaction name="actionUS_Droite"/>
+    <addaction name="actionUS_Gauche"/>
+    <addaction name="actionUS_Back"/>
+    <addaction name="separator"/>
+    <addaction name="actionSharp_Droit"/>
+    <addaction name="actionSharp_Gauche"/>
+    <addaction name="actionSharp_Back"/>
+   </widget>
+   <widget class="QMenu" name="menuVue">
+    <property name="title">
+     <string>Vue</string>
+    </property>
+    <addaction name="actionMessages"/>
+    <addaction name="actionPlateau"/>
+    <addaction name="actionMatch"/>
+   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuAsserv"/>
    <addaction name="menuOdo"/>
-   <addaction name="menuTourelle"/>
-   <addaction name="menuIA"/>
-   <addaction name="menuVue"/>
    <addaction name="menuCmd"/>
+   <addaction name="menuCalib"/>
+   <addaction name="menuVue"/>
+   <addaction name="menuAsserv"/>
   </widget>
   <action name="actionTestMoteurs">
    <property name="text">
@@ -198,29 +244,13 @@
    </property>
   </action>
   <action name="actionRecalage">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Recalage</string>
-   </property>
-  </action>
-  <action name="actionCustom">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Set custom</string>
    </property>
   </action>
   <action name="actionFwd_1m">
    <property name="text">
     <string>Avant 50cm</string>
-   </property>
-  </action>
-  <action name="actionArri_re_1m">
-   <property name="text">
-    <string>Arrière 50cm</string>
    </property>
   </action>
   <action name="actionReset">
@@ -283,11 +313,6 @@
     <string>Capteurs</string>
    </property>
   </action>
-  <action name="actionPlateau">
-   <property name="text">
-    <string>Plateau</string>
-   </property>
-  </action>
   <action name="actionBattery">
    <property name="icon">
     <iconset resource="res.qrc">
@@ -327,19 +352,72 @@
     <string>cmd5</string>
    </property>
   </action>
-  <action name="actionCmd6">
+  <action name="actionRequest">
    <property name="text">
-    <string>cmd6</string>
+    <string>Request</string>
    </property>
   </action>
-  <action name="actionCmd7">
+  <action name="actionUS_Droite">
    <property name="text">
-    <string>cmd7</string>
+    <string>US Droit</string>
    </property>
   </action>
-  <action name="actionCmd8">
+  <action name="actionUS_Gauche">
    <property name="text">
-    <string>cmd8</string>
+    <string>US Gauche</string>
+   </property>
+  </action>
+  <action name="actionUS_Back">
+   <property name="text">
+    <string>US Back</string>
+   </property>
+  </action>
+  <action name="actionSharp_Droit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Sharp Droit</string>
+   </property>
+  </action>
+  <action name="actionSharp_Gauche">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Sharp Gauche</string>
+   </property>
+  </action>
+  <action name="actionSharp_Back">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Sharp Back</string>
+   </property>
+  </action>
+  <action name="actionMessages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Messages</string>
+   </property>
+  </action>
+  <action name="actionPlateau">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plateau</string>
+   </property>
+  </action>
+  <action name="actionMatch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Match</string>
    </property>
   </action>
  </widget>
@@ -588,6 +666,134 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionUS_Back</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>CalibUSback()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUS_Droite</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>CalibUSdroite()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUS_Gauche</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>CalibUSgauche()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRecalage</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OdoRecalage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRequest</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OdoRequest()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPlateau</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>VuePlateau()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionMessages</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>VueMessages()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionMatch</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>VueMatch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>TestCapteurs()</slot>
@@ -608,5 +814,13 @@
   <slot>OdoUnmute()</slot>
   <slot>OdoRouge()</slot>
   <slot>OdoViolet()</slot>
+  <slot>OdoRequest()</slot>
+  <slot>OdoRecalage()</slot>
+  <slot>CalibUSback()</slot>
+  <slot>CalibUSdroite()</slot>
+  <slot>CalibUSgauche()</slot>
+  <slot>VuePlateau()</slot>
+  <slot>VueMatch()</slot>
+  <slot>VueMessages()</slot>
  </slots>
 </ui>
