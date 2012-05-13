@@ -1,8 +1,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
-#include <unistd.h>
+
 #include <QDebug>
-#include <QMessageBox>
 #include <QtCore/qmath.h>
 #include <QPen>
 #include <QBrush>
@@ -10,6 +9,10 @@
 #include <QPainterPath>
 #include <QHostInfo>
 
+
+char ** MainWindow::Argv; // Les arguments de main() à peu de chose près.
+
+QPointF MainWindow::origin(160, 106.5);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent, Qt::FramelessWindowHint),
@@ -19,9 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString host = QHostInfo::localHostName();
     if(host != "gros")
-        host = "petit";
+        host = "petit"; // par défaut
 
-    Vue(2);
+    BasculerVue(2);
 
     // Préparation de la vue Plateau. */
     QPixmap plateauPix = QPixmap(":/pics/plateau.png");
@@ -73,9 +76,9 @@ MainWindow::MainWindow(QWidget *parent) :
     chronoTimer = new QTimer(this);
     connect(chronoTimer, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
     batteryTimer = new QTimer(this);
-    connect(batteryTimer, SIGNAL(timeout()), this, SLOT(RefreshBattery()));
+    connect(batteryTimer, SIGNAL(timeout()), this, SLOT(FileBattery()));
     batteryTimer->start(30000);
-    RefreshBattery();
+    FileBattery(); // Actualise le niveau batterie.
 
     WriteIA("MESSAGE minigui started on " + host.toUtf8());
 }
@@ -86,244 +89,8 @@ MainWindow::~MainWindow()
 }
 
 
-QPointF MainWindow::origin(160, 106.5);
-void MainWindow::RefreshRobot(int x, int y, int theta)
-{
-    robot->setVisible(true);
-    robot->setRotation(theta / 100.);
-    robot->setPos(origin + QPointF(x, -y) * scale - robot->transformOriginPoint());
-}
 
-
-void MainWindow::WriteCAN(QByteArray line)
-{
-    SocketCAN->write(line + "\n");
-    ParseCAN(line); // Echo back to refresh view.
-}
-
-void MainWindow::ReadCAN()
-{
-    if(!SocketCAN->canReadLine())
-        return; // Not a full line yet.
-
-    MainWindow::ParseCAN(SocketCAN->readLine().trimmed());
-}
-
-void MainWindow::ParseCAN(QByteArray line)
-{
-    ui->CANBrowser->append(line);
-    line = line.toUpper();
-    QList<QByteArray> tokens = line.split(' ');
-
-    if(tokens.size() == 5 && (line.startsWith("ODO POS") || line.startsWith("ODO SET"))) {
-        RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
-    }
-    else if(line.startsWith("TURRET ANSWER")) {
-        for(int i = 0, j = 2; i < 3; i++) {
-            if(j + 1 < tokens.count()) {
-                qreal dist  = tokens.at(j++).toInt() * 10 * scale;
-                qreal angle = tokens.at(j++).toInt();
-
-                qreal span = 360. * 80. /* rayon apparent */ * scale / dist / 2 / 3.14159265f;
-                QRectF rect = QRectF(-dist, -dist, dist * 2, dist * 2);
-
-                QPainterPath path = QPainterPath();
-                path.arcMoveTo(rect, angle - span / 2);
-                path.arcTo(rect, angle - span / 2, span);
-                echos[i]->setPath(path);
-
-                echos[i]->setVisible(true);
-            }
-            else {
-                echos[i]->setVisible(false);
-            }
-        }
-    }
-    else if(tokens.size() == 3 && line.startsWith("BATTERY ANSWER")) {
-        QByteArray voltage = tokens.at(2);
-        voltage.append(" V");
-        ui->actionBattery->setText(voltage);
-    }
-}
-
-
-
-void MainWindow::WriteIA(QByteArray line)
-{
-    SocketIA->write(line + "\n");
-    ParseIA(line); // Echo back to refresh view.
-}
-
-void MainWindow::ReadIA()
-{
-    if(!SocketIA->canReadLine())
-        return;
-
-    MainWindow::ParseIA(SocketIA->readLine().trimmed());
-}
-
-void MainWindow::ParseIA(QByteArray line)
-{
-    ui->IABrowser->append(line);
-    line = line.toUpper();
-    QList<QByteArray> tokens = line.split(' ');
-
-    if(tokens.size() == 1 && line.startsWith("START")) {
-        chronoTimer->start(1000);
-        matchStart.start();
-        RefreshChrono();
-    }
-    else if(tokens.size() == 1 && line.startsWith("STOP")) {
-        if(chronoTimer->isActive())
-            RefreshChrono();
-        chronoTimer->stop();
-    }
-}
-
-void MainWindow::RefreshBattery()
-{
-    WriteCAN("BATTERY REQUEST");
-}
-
-void MainWindow::RefreshChrono()
-{
-    int remaining = (90 - matchStart.elapsed() / 1000);
-    ui->chrono->display(remaining);
-}
-
-
-
-void  MainWindow::FileBattery()
-{
-    WriteCAN("BATTERY REQUEST");
-}
-
-void  MainWindow::FileReset()
-{
-    WriteCAN("RESET");
-}
-
-void MainWindow::FileReboot(){
-    QMessageBox msgBox;
-    msgBox.setText(QString::fromUtf8("Redémarrer l'ARM ?"));
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    if(msgBox.exec() == QMessageBox::Ok) {
-        WriteIA("MESSAGE minigui reboot");
-        qDebug() << system("reboot");
-    }
-}
-
-void MainWindow::FileHalt()
-{
-    QMessageBox msgBox;
-    msgBox.setText(QString::fromUtf8("Éteindre l'ARM ?"));
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    if(msgBox.exec() == QMessageBox::Ok) {
-        WriteIA("MESSAGE minigui halt");
-        qDebug() << system("halt");
-    }
-}
-
-char ** MainWindow::Argv; // Les arguments de main() à peu de chose près.
-
-void MainWindow::FileRestart()
-{
-    pid_t pid = fork();
-    WriteIA("MESSAGE minigui restart");
-    if(pid == 0) {
-        execv(MainWindow::Argv[0], MainWindow::Argv); // TODO marche pas.
-    }
-    else {
-        //TODO QApplication::exit();
-        hide();
-    }
-}
-
-void MainWindow::FileQuit()
-{
-    WriteIA("MESSAGE minigui quit");
-    QApplication::exit();
-}
-
-
-
-void MainWindow::OdoRouge()
-{
-    WriteCAN("ODO SET -1250 -750 0");
-}
-
-void MainWindow::OdoViolet()
-{
-    WriteCAN("ODO SET 1250 -750 18000");
-}
-
-void MainWindow::OdoRecalage()
-{
-    WriteIA("POSITIONING");
-}
-
-void MainWindow::OdoMute()
-{
-    WriteCAN("ODO MUTE");
-}
-
-void MainWindow::OdoUnmute()
-{
-    WriteCAN("ODO UNMUTE");
-}
-
-void MainWindow::OdoRequest()
-{
-    WriteCAN("ODO REQUEST");
-}
-
-
-
-void MainWindow::Cmd1()
-{
-    WriteIA("CMD1");
-}
-
-void MainWindow::Cmd2()
-{
-    WriteIA("CMD2");
-}
-
-void MainWindow::Cmd3()
-{
-    WriteIA("CMD3");
-}
-
-void MainWindow::Cmd4()
-{
-    WriteIA("CMD4");
-}
-
-void MainWindow::Cmd5()
-{
-    WriteIA("CMD5");
-}
-
-
-
-void MainWindow::CalibUSgauche()
-{
-    WriteIA("CALIBRATE 1");
-}
-
-void MainWindow::CalibUSdroite()
-{
-    WriteIA("CALIBRATE 2");
-}
-
-void MainWindow::CalibUSback()
-{
-    WriteIA("CALIBRATE 8");
-}
-
-
-
-void MainWindow::Vue(int vue)
+void MainWindow::BasculerVue(int vue)
 {
     ui->messages->setVisible(vue == 1);
     ui->plateau ->setVisible(vue == 2);
@@ -334,17 +101,113 @@ void MainWindow::Vue(int vue)
     ui->actionMatch   ->setChecked(vue == 3);
 }
 
-void MainWindow::VueMessages()
+
+void MainWindow::RefreshChrono()
 {
-    Vue(1);
+    int remaining = (90 - matchStart.elapsed() / 1000);
+    ui->chrono->display(remaining);
 }
 
-void MainWindow::VuePlateau()
+
+void MainWindow::RefreshRobot(int x, int y, int theta)
 {
-    Vue(2);
+    robot->setVisible(true);
+    robot->setRotation(180 - theta / 100.);
+    robot->setPos(origin + QPointF(-x, y) * scale - robot->transformOriginPoint());
 }
 
-void MainWindow::VueMatch()
+
+
+void MainWindow::ReadCAN()
 {
-    Vue(3);
+    if(!SocketCAN->canReadLine())
+        return; // Not a full line yet.
+
+    MainWindow::ParseCAN(SocketCAN->readLine().simplified());
+}
+
+void MainWindow::WriteCAN(QByteArray line)
+{
+    SocketCAN->write(line + "\n");
+    ParseCAN(line); // Echo back to refresh view.
+}
+
+void MainWindow::ParseCAN(QByteArray line)
+{
+    ui->CANBrowser->append(line);
+    line = line.toUpper();
+    QList<QByteArray> tokens = line.split(' ');
+
+    qDebug() << line << endl;
+    if(tokens.size() == 5 && tokens.at(0) == "ODO" && (tokens.at(1) == "POS" || tokens.at(1) == "SET")) {
+        // Actualisation du robot.
+        RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
+    }
+    else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
+        // Actualisation du radar.
+
+        qDebug() << "oui" << endl;
+        for(int i = 0, j = 2; i < 3; i++) {
+            qDebug() << "ah" << endl;
+            if(j + 1 < tokens.count()) {
+                qreal dist  = tokens.at(j++).toInt() * 10 * scale;
+                qreal angle = - 90 - tokens.at(j++).toInt();
+                qreal span = 360. * 80. /* rayon apparent */ * scale / dist / 2 / 3.14159265f;
+                QRectF rect = QRectF(-dist, -dist, dist * 2, dist * 2);
+
+                qDebug() << "Echo " << j << ": " << dist << " " << angle << endl;
+
+                QPainterPath path = QPainterPath();
+                path.arcMoveTo(rect, angle - span / 2);
+                path.arcTo(rect, angle - span / 2, span);
+
+                echos[i]->setPath(path);
+
+                echos[i]->setVisible(true);
+            }
+            else {
+                echos[i]->setVisible(false);
+            }
+        }
+    }
+    else if(tokens.size() == 3 && tokens.at(0) == "BATTERY" && tokens.at(1) ==  "ANSWER") {
+        QByteArray voltage = tokens.at(2);
+        voltage.append(" V");
+        ui->actionBattery->setText(voltage);
+    }
+}
+
+
+
+
+void MainWindow::ReadIA()
+{
+    if(!SocketIA->canReadLine())
+        return;
+
+    MainWindow::ParseIA(SocketIA->readLine().simplified());
+}
+
+void MainWindow::WriteIA(QByteArray line)
+{
+    SocketIA->write(line + "\n");
+    ParseIA(line); // Echo back to refresh view.
+}
+
+void MainWindow::ParseIA(QByteArray line)
+{
+    ui->IABrowser->append(line);
+    line = line.toUpper();
+    QList<QByteArray> tokens = line.split(' ');
+
+    if(tokens.size() == 1 && tokens.at(0) == "START") {
+        chronoTimer->start(1000);
+        matchStart.start();
+        RefreshChrono();
+    }
+    else if(tokens.size() == 1 && tokens.at(0) == "STOP") {
+        if(chronoTimer->isActive())
+            RefreshChrono();
+        chronoTimer->stop();
+    }
 }
