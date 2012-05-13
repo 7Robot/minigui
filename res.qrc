@@ -3,5 +3,7 @@
         <file>plateau.png</file>
         <file>battery.png</file>
         <file>robot.png</file>
+        <file>gros.png</file>
+        <file>petit.png</file>
     </qresource>
 </RCC>

@@ -17,20 +17,20 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    chronoTimer = new QTimer(this);
-    connect(chronoTimer, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
-    batteryTimer = new QTimer(this);
-    connect(batteryTimer, SIGNAL(timeout()), this, SLOT(RefreshBattery()));
-    batteryTimer->start(30000);
-    RefreshBattery();
+    QString host = QHostInfo::localHostName();
+    if(host != "gros")
+        host = "petit";
 
     Vue(2);
 
     // Préparation de la vue Plateau. */
-    scene = new QGraphicsScene(0, 0, 320, 213, this);
-    background = scene->addPixmap(QPixmap(":/pics/plateau.png"));
-    robot = scene->addPixmap(QPixmap(":/pics/robot.png"));
-    robot->setTransformOriginPoint(21.5, 21.5);
+    QPixmap plateauPix = QPixmap(":/pics/plateau.png");
+    scene = new QGraphicsScene(0, 0, plateauPix.width(), plateauPix.height(), this);
+    background = scene->addPixmap(plateauPix);
+
+    QPixmap robotPix = QPixmap(":/pics/" + host + ".png");
+    robot = scene->addPixmap(robotPix);
+    robot->setTransformOriginPoint(robotPix.width() / 2., robotPix.height() / 2.);
     robot->setVisible(false);
 
     QPen pen = QPen(QColor(255, 0, 0));
@@ -52,10 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(SocketCAN, SIGNAL(readyRead()), this, SLOT(ReadCAN()));
     connect(SocketIA,  SIGNAL(readyRead()), this, SLOT(ReadIA()));
 
-    QString host = QHostInfo::localHostName();
-    if(host != "gros")
-        host = "petit";
-
     int portCAN, portIA;
     if(host == "petit") {
         portCAN = 7773;
@@ -63,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     else {
         portCAN = 7777;
-        portIA = 7778;
+        portIA  = 7778;
     }
     SocketCAN->connectToHost(host, portCAN);
     SocketIA->connectToHost(host,  portIA);
@@ -73,6 +69,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ////////////////////////////////////
 
 
+
+    chronoTimer = new QTimer(this);
+    connect(chronoTimer, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
+    batteryTimer = new QTimer(this);
+    connect(batteryTimer, SIGNAL(timeout()), this, SLOT(RefreshBattery()));
+    batteryTimer->start(30000);
+    RefreshBattery();
 
     WriteIA("MESSAGE minigui started on " + host.toUtf8());
 }
@@ -88,7 +91,7 @@ void MainWindow::RefreshRobot(int x, int y, int theta)
 {
     robot->setVisible(true);
     robot->setRotation(theta / 100.);
-    robot->setPos(origin + QPointF(-x, y) * scale - robot->transformOriginPoint());
+    robot->setPos(origin + QPointF(x, -y) * scale - robot->transformOriginPoint());
 }
 
 
@@ -246,12 +249,12 @@ void MainWindow::FileQuit()
 
 void MainWindow::OdoRouge()
 {
-    WriteCAN("ODO SET 1250 750 9000");
+    WriteCAN("ODO SET -1250 -750 0");
 }
 
 void MainWindow::OdoViolet()
 {
-    WriteCAN("ODO SET -1250 750 27000");
+    WriteCAN("ODO SET 1250 -750 18000");
 }
 
 void MainWindow::OdoRecalage()
