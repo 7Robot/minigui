@@ -1,6 +1,10 @@
 #!/bin/sh
 
-ipkg install minigui_1.0.0_armel.ipk
-killall minigui
+killall -KILL minigui
 
-nohup minigui -qws > /dev/null &
+cd /home
+ipkg install minigui_1.0.0_armel.ipk
+
+. /etc/profile.environment
+
+nohup minigui -qws > /dev/null < /dev/null &
