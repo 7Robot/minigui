@@ -78,6 +78,8 @@ private:
     QTcpSocket *SocketIA;
     QTcpSocket *SocketCAN;
 
+    QString robotName;
+
     QGraphicsScene *scene;
     static const qreal scale = 320. / 3000.;
     static QPointF origin;
@@ -91,6 +93,7 @@ private:
     QTime matchStart;
 
     void RefreshRobot(int x, int y, int theta);
+    void RefreshEchos(QList<QByteArray> tokens);
 
     void BasculerVue(int vue);
 

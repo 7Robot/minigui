@@ -25,8 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString host = QHostInfo::localHostName();
-    if(host != "gros")
-        host = "petit"; // par défaut
+    if(host == "gros")
+        robotName = host;
+    else
+        robotName = "petit"; // par défaut
 
     BasculerVue(2);
 
@@ -35,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene(0, 0, plateauPix.width(), plateauPix.height(), this);
     background = scene->addPixmap(plateauPix);
 
-    QPixmap robotPix = QPixmap(":/pics/" + host + ".png");
+    QPixmap robotPix = QPixmap(":/pics/" + robotName + ".png");
     robot = scene->addPixmap(robotPix);
     robot->setTransformOriginPoint(robotPix.width() / 2., robotPix.height() / 2.);
     robot->setVisible(false);
@@ -43,9 +45,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QPen pen = QPen(QColor(255, 0, 0));
     pen.setWidth(4);
     for(int i = 0; i < 4; i++) {
-        echos[i] = new QGraphicsPathItem(robot);
+        echos[i] = new QGraphicsPathItem();
         echos[i]->setPen(pen);
         echos[i]->setPos(robot->transformOriginPoint());
+        scene->addItem(echos[i]);
     }
 
     ui->plateau->setScene(scene);
@@ -60,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(SocketIA,  SIGNAL(readyRead()), this, SLOT(ReadIA()));
 
     int portCAN, portIA;
-    if(host == "petit") {
+    if(robotName == "petit") {
         portCAN = 7773;
         portIA  = 7774;
     }
@@ -68,8 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
         portCAN = 7777;
         portIA  = 7778;
     }
-    SocketCAN->connectToHost(host, portCAN);
-    SocketIA->connectToHost(host,  portIA);
+    SocketCAN->connectToHost(robotName, portCAN);
+    SocketIA->connectToHost(robotName,  portIA);
 
     SocketCAN->waitForConnected();
     SocketIA->waitForConnected();
@@ -84,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     batteryTimer->start(30000);
     FileBattery(); // Actualise le niveau batterie.
 
-    WriteIA("MESSAGE minigui started on " + host.toUtf8());
+    WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + robotName.toUtf8());
 }
 
 MainWindow::~MainWindow()
@@ -121,6 +124,33 @@ void MainWindow::RefreshRobot(int x, int y, int theta)
 }
 
 
+void MainWindow::RefreshEchos(QList<QByteArray> tokens)
+{
+    if(robot->isVisible() == false)
+    {
+        return;
+    }
+
+    for(int i = 0, j = 2; i < 3; i++) {
+        if(j + 1 < tokens.count()) {
+            qreal dist  = tokens.at(j++).toInt() * 10 * scale;
+            qreal angle = tokens.at(j++).toInt();
+            qreal span = 360. * 80. /* rayon apparent */ * scale / dist / 2 / 3.14159265f;
+            QRectF rect = QRectF(robot->x() - dist, robot->y() - dist, dist * 2, dist * 2);
+
+            QPainterPath path = QPainterPath();
+            path.arcMoveTo(rect, angle - span / 2);
+            path.arcTo(rect, angle - span / 2, span);
+
+            echos[i]->setPath(path);
+
+            echos[i]->setVisible(true);
+        }
+        else {
+            echos[i]->setVisible(false);
+        }
+    }
+}
 
 void MainWindow::ReadCAN()
 {
@@ -142,37 +172,21 @@ void MainWindow::ParseCAN(QByteArray line)
     line = line.toUpper();
     QList<QByteArray> tokens = line.split(' ');
 
-    qDebug() << line << endl;
     if(tokens.size() == 5 && tokens.at(0) == "ODO" && (tokens.at(1) == "POS" || tokens.at(1) == "SET")) {
         // Actualisation du robot.
         RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
     }
     else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
         // Actualisation du radar.
+        RefreshEchos(tokens);
+    }
+    else if(tokens.size() == 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "OFF") {
+        /*
+        // On efface les echos.
+        RefreshEchos(tokens);
 
-        qDebug() << "oui" << endl;
-        for(int i = 0, j = 2; i < 3; i++) {
-            qDebug() << "ah" << endl;
-            if(j + 1 < tokens.count()) {
-                qreal dist  = tokens.at(j++).toInt() * 10 * scale;
-                qreal angle = - 90 - tokens.at(j++).toInt();
-                qreal span = 360. * 80. /* rayon apparent */ * scale / dist / 2 / 3.14159265f;
-                QRectF rect = QRectF(-dist, -dist, dist * 2, dist * 2);
-
-                qDebug() << "Echo " << j << ": " << dist << " " << angle << endl;
-
-                QPainterPath path = QPainterPath();
-                path.arcMoveTo(rect, angle - span / 2);
-                path.arcTo(rect, angle - span / 2, span);
-
-                echos[i]->setPath(path);
-
-                echos[i]->setVisible(true);
-            }
-            else {
-                echos[i]->setVisible(false);
-            }
-        }
+        En fait non, de toute façon on reçoit des échos après.
+        TODO: utiliser un timer pour dégager les vieux echos. */
     }
     else if(tokens.size() == 3 && tokens.at(0) == "BATTERY" && tokens.at(1) ==  "ANSWER") {
         QByteArray voltage = tokens.at(2);
@@ -359,7 +373,13 @@ void MainWindow::RestartIA()
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     if(msgBox.exec() == QMessageBox::Ok) {
         WriteIA("restart ia");
-        qDebug() << system("killall python"); // TODO plus propre
+        qDebug() << system("killall python");
+
+        pid_t pid = fork();
+        if(pid == 0) {
+            execlp("/home/ia/ia.py", "/home/ia/ia.py", robotName.toLatin1().data(), NULL);
+            QApplication::exit(0);
+        }
 
         ui->initRed->show();
         ui->initViolet->show();
