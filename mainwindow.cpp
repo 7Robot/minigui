@@ -17,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    chrono = new QTimer(this);
+    connect(chrono, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
+
     Vue(2);
 
     // Préparation de la vue Plateau. */
@@ -45,15 +48,21 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(SocketCAN, SIGNAL(readyRead()), this, SLOT(ReadCAN()));
     connect(SocketIA,  SIGNAL(readyRead()), this, SLOT(ReadIA()));
 
-    int portCAN = 7773;
-    int portIA  = 7774;
-    if(QHostInfo::localHostName() == "gros") {
-        portCAN = 7777;
-        portIA  = 7778;
-    }
+    QString host = QHostInfo::localHostName();
+    if(host != "gros")
+        host = "petit";
 
-    SocketCAN->connectToHost("localhost", portCAN);
-    SocketIA->connectToHost("localhost",  portIA);
+    int portCAN, portIA;
+    if(host == "petit") {
+        portCAN = 7773;
+        portIA  = 7774;
+    }
+    else {
+        portCAN = 7777;
+        portIA = 7778;
+    }
+    SocketCAN->connectToHost(host, portCAN);
+    SocketIA->connectToHost(host,  portIA);
 
     SocketCAN->waitForConnected();
     SocketIA->waitForConnected();
@@ -61,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    WriteIA("MESSAGE minigui started");
+    WriteIA("MESSAGE minigui started on " + host.toUtf8());
 }
 
 MainWindow::~MainWindow()
@@ -95,8 +104,9 @@ void MainWindow::ReadCAN()
 
 void MainWindow::ParseCAN(QByteArray line)
 {
-    QList<QByteArray> tokens = line.toUpper().split(' ');
     ui->CANBrowser->append(line);
+    line = line.toUpper();
+    QList<QByteArray> tokens = line.split(' ');
 
     if(tokens.size() == 5 && (line.startsWith("ODO POS") || line.startsWith("ODO SET"))) {
         RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
@@ -127,8 +137,6 @@ void MainWindow::ParseCAN(QByteArray line)
         voltage.append(" V");
         ui->actionBattery->setText(voltage);
     }
-
-    // FIXME: dessiner asserv speed ?
 }
 
 
@@ -149,24 +157,27 @@ void MainWindow::ReadIA()
 
 void MainWindow::ParseIA(QByteArray line)
 {
-    QList<QByteArray> tokens = line.toUpper().split(' ');
     ui->IABrowser->append(line);
+    line = line.toUpper();
+    QList<QByteArray> tokens = line.split(' ');
 
     if(tokens.size() == 1 && line.startsWith("START")) {
-        chrono = new QTimer(this);
-        connect(chrono, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
         chrono->start(1000);
         matchStart.start();
+        RefreshChrono();
     }
     else if(tokens.size() == 1 && line.startsWith("STOP")) {
+        if(chrono->isActive())
+            RefreshChrono();
         chrono->stop();
-        RefreshChrono();
     }
 }
 
 void MainWindow::RefreshChrono()
 {
-    ui->chrono->display(matchStart.elapsed());
+    int remaining = (90 - matchStart.elapsed() / 1000);
+    qDebug() << remaining;
+    ui->chrono->display(remaining);
 }
 
 
@@ -183,7 +194,7 @@ void  MainWindow::FileReset()
 
 void MainWindow::FileReboot(){
     QMessageBox msgBox;
-    msgBox.setText("Redémarrer l'ARM ?");
+    msgBox.setText(QString::fromUtf8("Redémarrer l'ARM ?"));
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     if(msgBox.exec() == QMessageBox::Ok) {
         WriteIA("MESSAGE minigui reboot");
@@ -194,7 +205,7 @@ void MainWindow::FileReboot(){
 void MainWindow::FileHalt()
 {
     QMessageBox msgBox;
-    msgBox.setText("Éteindre l'ARM ?");
+    msgBox.setText(QString::fromUtf8("Éteindre l'ARM ?"));
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     if(msgBox.exec() == QMessageBox::Ok) {
         WriteIA("MESSAGE minigui halt");
@@ -212,7 +223,8 @@ void MainWindow::FileRestart()
         execv(MainWindow::Argv[0], MainWindow::Argv); // TODO marche pas.
     }
     else {
-        QApplication::exit();
+        //TODO QApplication::exit();
+        hide();
     }
 }
 

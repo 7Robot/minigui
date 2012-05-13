@@ -41,12 +41,18 @@
       <height>213</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
     <property name="font">
      <font>
       <pointsize>7</pointsize>
      </font>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -54,9 +60,20 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTextBrowser" name="IABrowser">
+      <widget class="QTextBrowser" name="CANBrowser">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>6</pointsize>
+        </font>
+       </property>
        <property name="frameShape">
-        <enum>QFrame::VLine</enum>
+        <enum>QFrame::HLine</enum>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::NoTextInteraction</set>
@@ -64,9 +81,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QTextBrowser" name="CANBrowser">
+      <widget class="QTextBrowser" name="IABrowser">
+       <property name="font">
+        <font>
+         <pointsize>6</pointsize>
+        </font>
+       </property>
        <property name="frameShape">
-        <enum>QFrame::VLine</enum>
+        <enum>QFrame::HLine</enum>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::NoTextInteraction</set>
