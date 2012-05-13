@@ -1072,23 +1072,6 @@ CT</string>
      <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
-   <widget class="Joystick" name="joystick">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>56</y>
-      <width>100</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="res.qrc">:/pics/joystick.png</pixmap>
-    </property>
-   </widget>
-   <zorder>joystick</zorder>
    <zorder>messages</zorder>
    <zorder>plateau</zorder>
    <zorder>match</zorder>
@@ -1463,13 +1446,6 @@ CT</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Joystick</class>
-   <extends>QLabel</extends>
-   <header location="global">joystick.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="res.qrc"/>
  </resources>
