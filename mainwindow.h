@@ -5,6 +5,9 @@
 #include <QTcpSocket>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QTimer>
+#include <QTime>
+
 
 namespace Ui {
     class MainWindow;
@@ -45,12 +48,16 @@ public slots:
     void CalibUSdroite();
     void CalibUSback();
 
+
     void ReadIA();
     void ReadCAN();
 
     void VueMessages();
     void VuePlateau();
     void VueMatch();
+
+
+    void RefreshChrono();
 
 private:
     Ui::MainWindow *ui;
@@ -63,6 +70,9 @@ private:
     QGraphicsPathItem *echos[4];
     static const qreal scale = 320. / 3000.;
     static QPointF origin;
+
+    QTimer *chrono;
+    QTime matchStart;
 
     void WriteIA(QByteArray line);
     void ParseIA(QByteArray line);

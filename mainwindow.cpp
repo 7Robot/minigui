@@ -8,6 +8,7 @@
 #include <QBrush>
 #include <QGraphicsPathItem>
 #include <QPainterPath>
+#include <QHostInfo>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     Vue(2);
 
-
+    // Préparation de la vue Plateau. */
     scene = new QGraphicsScene(0, 0, 320, 213, this);
     background = scene->addPixmap(QPixmap(":/pics/plateau.png"));
     robot = scene->addPixmap(QPixmap(":/pics/robot.png"));
@@ -34,19 +35,31 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     ui->plateau->setScene(scene);
+    ////////////////////////////////////
 
 
+    /* Préparation du réseau. */
     SocketCAN = new QTcpSocket(this);
     SocketIA = new QTcpSocket(this);
 
     connect(SocketCAN, SIGNAL(readyRead()), this, SLOT(ReadCAN()));
     connect(SocketIA,  SIGNAL(readyRead()), this, SLOT(ReadIA()));
 
-    SocketCAN->connectToHost("localhost", 7773);
-    SocketIA->connectToHost("localhost", 7774);
+    int portCAN = 7773;
+    int portIA  = 7774;
+    if(QHostInfo::localHostName() == "gros") {
+        portCAN = 7777;
+        portIA  = 7778;
+    }
+
+    SocketCAN->connectToHost("localhost", portCAN);
+    SocketIA->connectToHost("localhost",  portIA);
 
     SocketCAN->waitForConnected();
     SocketIA->waitForConnected();
+    ////////////////////////////////////
+
+
 
     WriteIA("MESSAGE minigui started");
 }
@@ -61,14 +74,14 @@ QPointF MainWindow::origin(160, 106.5);
 void MainWindow::RefreshRobot(int x, int y, int theta)
 {
     robot->setVisible(true);
-    robot->setRotation(theta / 100);
+    robot->setRotation(theta / 100.);
     robot->setPos(origin + QPointF(-x, y) * scale - robot->transformOriginPoint());
 }
 
 
 void MainWindow::WriteCAN(QByteArray line)
 {
-    SocketCAN->write(line);
+    SocketCAN->write(line + "\n");
     ParseCAN(line); // Echo back to refresh view.
 }
 
@@ -122,7 +135,7 @@ void MainWindow::ParseCAN(QByteArray line)
 
 void MainWindow::WriteIA(QByteArray line)
 {
-    SocketIA->write(line);
+    SocketIA->write(line + "\n");
     ParseIA(line); // Echo back to refresh view.
 }
 
@@ -136,8 +149,24 @@ void MainWindow::ReadIA()
 
 void MainWindow::ParseIA(QByteArray line)
 {
-    //QList<QByteArray> tokens = line.toUpper().split(' ');
+    QList<QByteArray> tokens = line.toUpper().split(' ');
     ui->IABrowser->append(line);
+
+    if(tokens.size() == 1 && line.startsWith("START")) {
+        chrono = new QTimer(this);
+        connect(chrono, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
+        chrono->start(1000);
+        matchStart.start();
+    }
+    else if(tokens.size() == 1 && line.startsWith("STOP")) {
+        chrono->stop();
+        RefreshChrono();
+    }
+}
+
+void MainWindow::RefreshChrono()
+{
+    ui->chrono->display(matchStart.elapsed());
 }
 
 

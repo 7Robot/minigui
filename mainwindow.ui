@@ -41,6 +41,11 @@
       <height>213</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>7</pointsize>
+     </font>
+    </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>0</number>
@@ -49,10 +54,24 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTextBrowser" name="IABrowser"/>
+      <widget class="QTextBrowser" name="IABrowser">
+       <property name="frameShape">
+        <enum>QFrame::VLine</enum>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::NoTextInteraction</set>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QTextBrowser" name="CANBrowser"/>
+      <widget class="QTextBrowser" name="CANBrowser">
+       <property name="frameShape">
+        <enum>QFrame::VLine</enum>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::NoTextInteraction</set>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -153,9 +172,9 @@
      <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
-   <zorder>messages</zorder>
    <zorder>plateau</zorder>
    <zorder>match</zorder>
+   <zorder>messages</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
