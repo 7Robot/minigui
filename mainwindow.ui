@@ -93,6 +93,9 @@
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::NoTextInteraction</set>
+       </property>
        <property name="maximumBlockCount">
         <number>100</number>
        </property>
@@ -1098,8 +1101,10 @@ CT</string>
     <property name="title">
      <string>Asserv</string>
     </property>
-    <addaction name="actionRotNeg"/>
-    <addaction name="actionRotPos"/>
+    <addaction name="actionRotPos90"/>
+    <addaction name="actionRotNeg90"/>
+    <addaction name="actionRotPos360"/>
+    <addaction name="actionRotNeg360"/>
     <addaction name="actionDistPos"/>
     <addaction name="actionDistNeg"/>
    </widget>
@@ -1192,7 +1197,7 @@ CT</string>
     <string>Reboot...</string>
    </property>
   </action>
-  <action name="actionRotPos">
+  <action name="actionRotPos360">
    <property name="text">
     <string>Rot 360°</string>
    </property>
@@ -1385,7 +1390,7 @@ CT</string>
     <string>Dist -1m</string>
    </property>
   </action>
-  <action name="actionRotNeg">
+  <action name="actionRotNeg360">
    <property name="text">
     <string>Rot -360°</string>
    </property>
@@ -1418,6 +1423,16 @@ CT</string>
   <action name="actionPalmier">
    <property name="text">
     <string>Set Zero</string>
+   </property>
+  </action>
+  <action name="actionRotPos90">
+   <property name="text">
+    <string>Rot 90°</string>
+   </property>
+  </action>
+  <action name="actionRotNeg90">
+   <property name="text">
+    <string>Rot -90°</string>
    </property>
   </action>
  </widget>
@@ -1907,10 +1922,10 @@ CT</string>
    </hints>
   </connection>
   <connection>
-   <sender>actionRotPos</sender>
+   <sender>actionRotPos360</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>AsservRotPos()</slot>
+   <slot>AsservRotPos360()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -1923,10 +1938,10 @@ CT</string>
    </hints>
   </connection>
   <connection>
-   <sender>actionRotNeg</sender>
+   <sender>actionRotNeg360</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>AsservRotNeg()</slot>
+   <slot>AsservRotNeg360()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -2034,6 +2049,38 @@ CT</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionRotPos90</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>AsservRotPos90()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRotNeg90</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>AsservRotNeg90()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>FileHalt()</slot>
@@ -2064,13 +2111,15 @@ CT</string>
   <slot>InitRed()</slot>
   <slot>InitViolet()</slot>
   <slot>RestartIA()</slot>
-  <slot>AsservRotPos()</slot>
-  <slot>AsservRotNeg()</slot>
+  <slot>AsservRotPos90()</slot>
+  <slot>AsservRotNeg90()</slot>
   <slot>AsservDistNeg()</slot>
   <slot>AsservDistPos()</slot>
   <slot>CalibSharpGauche()</slot>
   <slot>CalibSharpDroite()</slot>
   <slot>CalibSharpBack()</slot>
   <slot>OdoPalmier()</slot>
+  <slot>AsservRotNeg360()</slot>
+  <slot>AsservRotPos360()</slot>
  </slots>
 </ui>

@@ -9,12 +9,11 @@
 #include <QGraphicsPathItem>
 #include <QPainterPath>
 #include <QHostInfo>
-
-#include <unistd.h> // Pour les execs sur ARM.
-
+#include <QProcess>
 
 
-char ** MainWindow::Argv; // Les arguments de main() à peu de chose près.
+QString MainWindow::ArgPath;
+QStringList MainWindow::Args; // Les arguments de main() à peu de chose près.
 
 QPointF MainWindow::origin(160, 106.5);
 
@@ -25,10 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString host = QHostInfo::localHostName();
-    if(host == "gros")
+    if(host == "petit")
         robotName = host;
     else
-        robotName = "petit"; // par défaut
+        robotName = "gros"; // par défaut
 
     BasculerVue(2);
 
@@ -41,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     robot = scene->addPixmap(robotPix);
     robot->setTransformOriginPoint(robotPix.width() / 2., robotPix.height() / 2.);
     robot->setVisible(false);
+    robot->setPos(0, 0); // Valeur initiale sur laquelle se basent les echos.
 
     QPen pen = QPen(QColor(255, 0, 0));
     pen.setWidth(4);
@@ -79,15 +79,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ////////////////////////////////////
 
 
+    cleanEchosTimer = new QTimer(this);
+    cleanEchosTimer->setSingleShot(true);
+    connect(cleanEchosTimer, SIGNAL(timeout()), this, SLOT(CleanEchos()));
 
     chronoTimer = new QTimer(this);
     connect(chronoTimer, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
+
     batteryTimer = new QTimer(this);
     connect(batteryTimer, SIGNAL(timeout()), this, SLOT(FileBattery()));
-    batteryTimer->start(30000);
-    FileBattery(); // Actualise le niveau batterie.
 
-    WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + robotName.toUtf8());
+    batteryTimer->start(30000);
+    FileBattery(); // Actualise le niveau batterie toutes les 30 secondes.
+
+    WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + robotName.toUtf8() + ".");
 }
 
 MainWindow::~MainWindow()
@@ -126,15 +131,15 @@ void MainWindow::RefreshRobot(int x, int y, int theta)
 
 void MainWindow::RefreshEchos(QList<QByteArray> tokens)
 {
-    if(robot->isVisible() == false)
-    {
-        return;
-    }
+    //if(robot->isVisible() == false)
+    //{
+    //    return;
+    //}
 
-    for(int i = 0, j = 2; i < 3; i++) {
+    for(int i = 0, j = 2; i < 4; i++) {
         if(j + 1 < tokens.count()) {
             qreal dist  = tokens.at(j++).toInt() * 10 * scale;
-            qreal angle = tokens.at(j++).toInt();
+            qreal angle = tokens.at(j++).toInt() - robot->rotation() - 90;
             qreal span = 360. * 80. /* rayon apparent */ * scale / dist / 2 / 3.14159265f;
             QRectF rect = QRectF(robot->x() - dist, robot->y() - dist, dist * 2, dist * 2);
 
@@ -144,11 +149,20 @@ void MainWindow::RefreshEchos(QList<QByteArray> tokens)
 
             echos[i]->setPath(path);
 
-            echos[i]->setVisible(true);
+            echos[i]->show();
         }
         else {
-            echos[i]->setVisible(false);
+            echos[i]->hide();
         }
+    }
+
+    cleanEchosTimer->start(1000); // On efface les vieux echos automatiquement.
+}
+
+void MainWindow::CleanEchos()
+{
+    for(int i = 0; i < 3; i++) {
+        echos[i]->hide();
     }
 }
 
@@ -169,7 +183,6 @@ void MainWindow::WriteCAN(QByteArray line)
 void MainWindow::ParseCAN(QByteArray line)
 {
     ui->historyCAN->appendPlainText(line);
-    //TODOif(ui->CANBrowser->cou)
     line = line.toUpper();
     QList<QByteArray> tokens = line.split(' ');
 
@@ -180,14 +193,6 @@ void MainWindow::ParseCAN(QByteArray line)
     else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
         // Actualisation du radar.
         RefreshEchos(tokens);
-    }
-    else if(tokens.size() == 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "OFF") {
-        /*
-        // On efface les echos.
-        RefreshEchos(tokens);
-
-        En fait non, de toute façon on reçoit des échos après.
-        TODO: utiliser un timer pour dégager les vieux echos. */
     }
     else if(tokens.size() == 3 && tokens.at(0) == "BATTERY" && tokens.at(1) ==  "ANSWER") {
         QByteArray voltage = tokens.at(2);
@@ -278,18 +283,12 @@ void MainWindow::FileHalt()
 
 void MainWindow::FileRestart()
 {
-    pid_t pid = fork();
     WriteIA("MESSAGE minigui restart");
-    if(pid == 0) {
-        //sleep(1); // Le QWS se ferme.
-        //execv(MainWindow::Argv[0], MainWindow::Argv);
-        MainWindow::Argv[1] = NULL;
-        execv(MainWindow::Argv[0], MainWindow::Argv);
-    }
-    else {
-        //QApplication::exit(); // TODO
-        hide();
-    }
+
+    QProcess proc;
+    proc.startDetached(ArgPath, Args); // On relance le même processus.
+
+    QApplication::exit();
 }
 
 void MainWindow::FileQuit()
@@ -377,14 +376,15 @@ void MainWindow::RestartIA()
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     if(msgBox.exec() == QMessageBox::Ok) {
         WriteIA("restart ia");
-        qDebug() << system("killall python");
 
-        pid_t pid = fork();
-        if(pid == 0) {
-            execlp("/home/ia/ia.py", "/home/ia/ia.py", robotName.toLatin1().data(), NULL);
-            QApplication::exit(0);
-        }
+        QProcess kill;
+        kill.start("killall python"); // Ne marche pas si l'IA tourne à distance.
+        qDebug() << "killall: " << kill.waitForFinished(1000);
 
+        QProcess ia;
+        ia.startDetached("/home/ia/ia.py", QStringList(robotName));
+
+        // Affiche à nouveau le choix de coté.
         ui->initRed->show();
         ui->initViolet->show();
     }
@@ -433,12 +433,22 @@ void MainWindow::OdoMute()
 
 
 
-void MainWindow::AsservRotPos()
+void MainWindow::AsservRotPos90()
+{
+    WriteCAN("ASSERV ROT 9000");
+}
+
+void MainWindow::AsservRotNeg90()
+{
+    WriteCAN("ASSERV ROT -9000");
+}
+
+void MainWindow::AsservRotPos360()
 {
     WriteCAN("ASSERV ROT 36000");
 }
 
-void MainWindow::AsservRotNeg()
+void MainWindow::AsservRotNeg360()
 {
     WriteCAN("ASSERV ROT -36000");
 }

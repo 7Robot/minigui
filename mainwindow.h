@@ -21,7 +21,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    static char **Argv;
+    static QStringList Args;
+    static QString ArgPath;
 
 public slots:
     void FileBattery();
@@ -54,8 +55,10 @@ public slots:
     void OdoUnmute();
     void OdoMute();
 
-    void AsservRotPos();
-    void AsservRotNeg();
+    void AsservRotPos90();
+    void AsservRotNeg90();
+    void AsservRotPos360();
+    void AsservRotNeg360();
     void AsservDistPos();
     void AsservDistNeg();
 
@@ -71,6 +74,7 @@ public slots:
     void ReadCAN();
 
     void RefreshChrono();
+    void CleanEchos();
 
 private:
     Ui::MainWindow *ui;
@@ -90,6 +94,7 @@ private:
 
     QTimer *batteryTimer;
     QTimer *chronoTimer;
+    QTimer *cleanEchosTimer;
     QTime matchStart;
 
     void RefreshRobot(int x, int y, int theta);

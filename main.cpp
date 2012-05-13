@@ -1,19 +1,18 @@
 #include <QtGui/QApplication>
-#include "mainwindow.h"
+#include <QThread>
 
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
+    MainWindow::ArgPath = argv[0];
+    for(int i = 1; i < argc; i++) { // Sauvegarde des arguments.
+        MainWindow::Args << argv[i];
+    }
+
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
-
-    char ** Argv = new char*[argc + 1];
-    for(int i = 0; i < argc; i++) {
-        Argv[i] = argv[i];
-    }
-    Argv[argc] = 0;
-    MainWindow::Argv = Argv;
 
     return a.exec();
 }
