@@ -168,7 +168,8 @@ void MainWindow::WriteCAN(QByteArray line)
 
 void MainWindow::ParseCAN(QByteArray line)
 {
-    ui->CANBrowser->append(line);
+    ui->historyCAN->appendPlainText(line);
+    //TODOif(ui->CANBrowser->cou)
     line = line.toUpper();
     QList<QByteArray> tokens = line.split(' ');
 
@@ -214,7 +215,7 @@ void MainWindow::WriteIA(QByteArray line)
 
 void MainWindow::ParseIA(QByteArray line)
 {
-    ui->IABrowser->append(line);
+    ui->historyIA->appendPlainText(line);
     line = line.toUpper();
     QList<QByteArray> tokens = line.split(' ');
 
@@ -227,6 +228,9 @@ void MainWindow::ParseIA(QByteArray line)
         if(chronoTimer->isActive())
             RefreshChrono();
         chronoTimer->stop();
+    }
+    else if(tokens.size() == 2 && tokens.at(0) == "VUE") {
+        BasculerVue(tokens.at(1).toInt());
     }
 }
 

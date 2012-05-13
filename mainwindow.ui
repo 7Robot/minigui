@@ -60,11 +60,11 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTextBrowser" name="CANBrowser">
-       <property name="minimumSize">
+      <widget class="QPlainTextEdit" name="historyIA">
+       <property name="maximumSize">
         <size>
-         <width>0</width>
-         <height>150</height>
+         <width>16777215</width>
+         <height>55</height>
         </size>
        </property>
        <property name="font">
@@ -72,26 +72,29 @@
          <pointsize>6</pointsize>
         </font>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::HLine</enum>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::NoTextInteraction</set>
        </property>
+       <property name="maximumBlockCount">
+        <number>30</number>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QTextBrowser" name="IABrowser">
+      <widget class="QPlainTextEdit" name="historyCAN">
        <property name="font">
         <font>
          <pointsize>6</pointsize>
         </font>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::HLine</enum>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
        </property>
-       <property name="textInteractionFlags">
-        <set>Qt::NoTextInteraction</set>
+       <property name="maximumBlockCount">
+        <number>100</number>
        </property>
       </widget>
      </item>
@@ -1066,9 +1069,9 @@ CT</string>
      <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
+   <zorder>match</zorder>
    <zorder>plateau</zorder>
    <zorder>messages</zorder>
-   <zorder>match</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
