@@ -24,10 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString host = QHostInfo::localHostName();
-    if(host == "petit")
-        robotName = host;
-    else
-        robotName = "gros"; // par défaut
+    if(host != "gros") {
+        ourRobotName = "petit"; // Par défaut
+        theirRobotName = "gros";
+    }
+    else {
+        ourRobotName = "gros";
+        theirRobotName = "petit";
+    }
 
     BasculerVue(2);
 
@@ -36,19 +40,33 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene(0, 0, plateauPix.width(), plateauPix.height(), this);
     background = scene->addPixmap(plateauPix);
 
-    QPixmap robotPix = QPixmap(":/pics/" + robotName + ".png");
-    robot = scene->addPixmap(robotPix);
-    robot->setTransformOriginPoint(robotPix.width() / 2., robotPix.height() / 2.);
-    robot->setVisible(false);
-    robot->setPos(0, 0); // Valeur initiale sur laquelle se basent les echos.
+    QPixmap ourRobotPix = QPixmap(":/pics/" + ourRobotName + ".png");
+    ourRobot = scene->addPixmap(ourRobotPix);
+    ourRobot->setTransformOriginPoint(ourRobotPix.width() / 2., ourRobotPix.height() / 2.);
+    ourRobot->setVisible(false);
+    ourRobot->setPos(0, 0); // Valeur initiale sur laquelle se basent les echos.
 
-    QPen pen = QPen(QColor(255, 0, 0));
-    pen.setWidth(4);
+    QPixmap theirRobotPix = QPixmap(":/pics/" + theirRobotName + ".png");
+    theirRobot = scene->addPixmap(theirRobotPix);
+    theirRobot->setTransformOriginPoint(theirRobotPix.width() / 2., theirRobotPix.height() / 2.);
+    theirRobot->setVisible(false);
+    theirRobot->setPos(0, 0); // Valeur initiale sur laquelle se basent les echos.
+
+    QPen ourPen   = QPen(QColor(255, 0, 0));
+    QPen theirPen = QPen(QColor(0, 255, 0));
+    ourPen.setWidth(4);
+    theirPen.setWidth(4);
+
     for(int i = 0; i < 4; i++) {
-        echos[i] = new QGraphicsPathItem();
-        echos[i]->setPen(pen);
-        echos[i]->setPos(robot->transformOriginPoint());
-        scene->addItem(echos[i]);
+        ourEchos[i] = new QGraphicsPathItem();
+        ourEchos[i]->setPen(ourPen);
+        ourEchos[i]->setPos(ourRobot->transformOriginPoint());
+        scene->addItem(ourEchos[i]);
+
+        theirEchos[i] = new QGraphicsPathItem();
+        theirEchos[i]->setPen(theirPen);
+        theirEchos[i]->setPos(theirRobot->transformOriginPoint());
+        scene->addItem(theirEchos[i]);
     }
 
     ui->plateau->setScene(scene);
@@ -56,26 +74,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     /* Préparation du réseau. */
-    SocketCAN = new QTcpSocket(this);
-    SocketIA = new QTcpSocket(this);
+    CANSocket = new QTcpSocket(this);
+    IASocket = new QTcpSocket(this);
+    theirCANSocket = new QTcpSocket(this);
 
-    connect(SocketCAN, SIGNAL(readyRead()), this, SLOT(ReadCAN()));
-    connect(SocketIA,  SIGNAL(readyRead()), this, SLOT(ReadIA()));
+    connect(CANSocket,       SIGNAL(readyRead()), this, SLOT(ReadCAN()));
+    connect(IASocket,        SIGNAL(readyRead()), this, SLOT(ReadIA()));
+    connect(theirCANSocket,  SIGNAL(readyRead()), this, SLOT(ReadTheirCAN()));
 
-    int portCAN, portIA;
-    if(robotName == "petit") {
-        portCAN = 7773;
-        portIA  = 7774;
+    int CANport, IAport, theirCANport;
+    if(ourRobotName == "petit") {
+        CANport = 7773;
+        IAport  = 7774;
+        theirCANport = 7777;
     }
     else {
-        portCAN = 7777;
-        portIA  = 7778;
+        CANport = 7777;
+        IAport  = 7778;
+        theirCANport = 7773;
     }
-    SocketCAN->connectToHost(robotName, portCAN);
-    SocketIA->connectToHost(robotName,  portIA);
+    CANSocket->connectToHost(ourRobotName, CANport);
+    IASocket->connectToHost(ourRobotName,  IAport);
+    theirCANSocket->connectToHost(theirRobotName, theirCANport);
 
-    SocketCAN->waitForConnected();
-    SocketIA->waitForConnected();
+    CANSocket->waitForConnected();
+    IASocket->waitForConnected();
     ////////////////////////////////////
 
 
@@ -92,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent) :
     batteryTimer->start(30000);
     FileBattery(); // Actualise le niveau batterie toutes les 30 secondes.
 
-    WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + robotName.toUtf8() + ".");
+    WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + ourRobotName.toUtf8() + ".");
 }
 
 MainWindow::~MainWindow()
@@ -121,15 +144,19 @@ void MainWindow::RefreshChrono()
 }
 
 
-void MainWindow::RefreshRobot(int x, int y, int theta)
+void MainWindow::RefreshRobot(QList<QByteArray> tokens, QGraphicsPixmapItem *robot)
 {
+    int x = tokens.at(2).toInt();
+    int y = tokens.at(3).toInt();
+    int theta = tokens.at(4).toInt();
+
     robot->setVisible(true);
     robot->setRotation(180 - theta / 100.);
     robot->setPos(origin + QPointF(-x, y) * scale - robot->transformOriginPoint());
 }
 
 
-void MainWindow::RefreshEchos(QList<QByteArray> tokens)
+void MainWindow::RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4])
 {
     //if(robot->isVisible() == false)
     //{
@@ -162,21 +189,21 @@ void MainWindow::RefreshEchos(QList<QByteArray> tokens)
 void MainWindow::CleanEchos()
 {
     for(int i = 0; i < 3; i++) {
-        echos[i]->hide();
+        ourEchos[i]->hide();
     }
 }
 
 void MainWindow::ReadCAN()
 {
-    if(!SocketCAN->canReadLine())
+    if(!CANSocket->canReadLine())
         return; // Not a full line yet.
 
-    MainWindow::ParseCAN(SocketCAN->readLine().simplified());
+    MainWindow::ParseCAN(CANSocket->readLine().simplified());
 }
 
 void MainWindow::WriteCAN(QByteArray line)
 {
-    SocketCAN->write(line + "\n");
+    CANSocket->write(line + "\n");
     ParseCAN(line); // Echo back to refresh view.
 }
 
@@ -188,11 +215,11 @@ void MainWindow::ParseCAN(QByteArray line)
 
     if(tokens.size() == 5 && tokens.at(0) == "ODO" && (tokens.at(1) == "POS" || tokens.at(1) == "SET")) {
         // Actualisation du robot.
-        RefreshRobot(tokens.at(2).toInt(), tokens.at(3).toInt(), tokens.at(4).toInt());
+        RefreshRobot(tokens, ourRobot);
     }
     else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
         // Actualisation du radar.
-        RefreshEchos(tokens);
+        RefreshEchos(tokens, ourRobot, ourEchos);
     }
     else if(tokens.size() == 3 && tokens.at(0) == "BATTERY" && tokens.at(1) ==  "ANSWER") {
         QByteArray voltage = tokens.at(2);
@@ -206,15 +233,15 @@ void MainWindow::ParseCAN(QByteArray line)
 
 void MainWindow::ReadIA()
 {
-    if(!SocketIA->canReadLine())
+    if(!IASocket->canReadLine())
         return;
 
-    MainWindow::ParseIA(SocketIA->readLine().simplified());
+    MainWindow::ParseIA(IASocket->readLine().simplified());
 }
 
 void MainWindow::WriteIA(QByteArray line)
 {
-    SocketIA->write(line + "\n");
+    IASocket->write(line + "\n");
     ParseIA(line); // Echo back to refresh view.
 }
 
@@ -240,6 +267,23 @@ void MainWindow::ParseIA(QByteArray line)
 }
 
 
+void MainWindow::ReadTheirCAN()
+{
+    if(!theirCANSocket->canReadLine())
+        return;
+
+    QByteArray line = theirCANSocket->readLine().simplified().toUpper();
+    QList<QByteArray> tokens = line.split(' ');
+
+    if(tokens.size() == 5 && tokens.at(0) == "ODO" && (tokens.at(1) == "POS" || tokens.at(1) == "SET")) {
+        // Actualisation du robot.
+        RefreshRobot(tokens, theirRobot);
+    }
+    else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
+        // Actualisation du radar.
+        RefreshEchos(tokens, theirRobot, theirEchos);
+    }
+}
 
 
 
@@ -382,7 +426,7 @@ void MainWindow::RestartIA()
         qDebug() << "killall: " << kill.waitForFinished(1000);
 
         QProcess ia;
-        ia.startDetached("/home/ia/ia.py", QStringList(robotName));
+        ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName));
 
         // Affiche à nouveau le choix de coté.
         ui->initRed->show();
@@ -461,6 +505,16 @@ void MainWindow::AsservDistPos()
 void MainWindow::AsservDistNeg()
 {
     WriteCAN("ASSERV DIST -10000");
+}
+
+void MainWindow::AsservJoystick(bool checked)
+{
+    if(checked) {
+
+    }
+    else {
+
+    }
 }
 
 

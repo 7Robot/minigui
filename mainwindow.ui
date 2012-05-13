@@ -184,7 +184,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>70</y>
        <width>131</width>
        <height>71</height>
       </rect>
@@ -620,7 +620,7 @@ Terro</string>
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>80</y>
+       <y>70</y>
        <width>131</width>
        <height>71</height>
       </rect>
@@ -1072,9 +1072,26 @@ CT</string>
      <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
-   <zorder>match</zorder>
-   <zorder>plateau</zorder>
+   <widget class="Joystick" name="joystick">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>56</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="res.qrc">:/pics/joystick.png</pixmap>
+    </property>
+   </widget>
+   <zorder>joystick</zorder>
    <zorder>messages</zorder>
+   <zorder>plateau</zorder>
+   <zorder>match</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -1107,6 +1124,7 @@ CT</string>
     <addaction name="actionRotNeg360"/>
     <addaction name="actionDistPos"/>
     <addaction name="actionDistNeg"/>
+    <addaction name="actionJoystick"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -1435,8 +1453,23 @@ CT</string>
     <string>Rot -90°</string>
    </property>
   </action>
+  <action name="actionJoystick">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Joystick</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Joystick</class>
+   <extends>QLabel</extends>
+   <header location="global">joystick.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="res.qrc"/>
  </resources>
@@ -2081,6 +2114,22 @@ CT</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionJoystick</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>AsservJoystick(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>FileHalt()</slot>
@@ -2121,5 +2170,6 @@ CT</string>
   <slot>OdoPalmier()</slot>
   <slot>AsservRotNeg360()</slot>
   <slot>AsservRotPos360()</slot>
+  <slot>AsservJoystick(bool)</slot>
  </slots>
 </ui>

@@ -61,6 +61,7 @@ public slots:
     void AsservRotNeg360();
     void AsservDistPos();
     void AsservDistNeg();
+    void AsservJoystick(bool checked);
 
     void CalibUSgauche();
     void CalibUSdroite();
@@ -72,6 +73,7 @@ public slots:
 
     void ReadIA();
     void ReadCAN();
+    void ReadTheirCAN();
 
     void RefreshChrono();
     void CleanEchos();
@@ -79,17 +81,21 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-    QTcpSocket *SocketIA;
-    QTcpSocket *SocketCAN;
+    QTcpSocket *IASocket;
+    QTcpSocket *CANSocket;
+    QTcpSocket *theirCANSocket;
 
-    QString robotName;
+    QString ourRobotName;
+    QString theirRobotName;
 
     QGraphicsScene *scene;
     static const qreal scale = 320. / 3000.;
     static QPointF origin;
     QGraphicsPixmapItem *background;
-    QGraphicsPixmapItem *robot;
-    QGraphicsPathItem *echos[4];
+    QGraphicsPixmapItem *ourRobot;
+    QGraphicsPixmapItem *theirRobot;
+    QGraphicsPathItem *ourEchos[4];
+    QGraphicsPathItem *theirEchos[4];
 
 
     QTimer *batteryTimer;
@@ -97,8 +103,8 @@ private:
     QTimer *cleanEchosTimer;
     QTime matchStart;
 
-    void RefreshRobot(int x, int y, int theta);
-    void RefreshEchos(QList<QByteArray> tokens);
+    void RefreshRobot(QList<QByteArray> tokens, QGraphicsPixmapItem *robot);
+    void RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4]);
 
     void BasculerVue(int vue);
 
