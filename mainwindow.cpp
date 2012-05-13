@@ -17,8 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    chrono = new QTimer(this);
-    connect(chrono, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
+    chronoTimer = new QTimer(this);
+    connect(chronoTimer, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
+    batteryTimer = new QTimer(this);
+    connect(batteryTimer, SIGNAL(timeout()), this, SLOT(RefreshBattery()));
+    batteryTimer->start(30000);
+    RefreshBattery();
 
     Vue(2);
 
@@ -162,21 +166,25 @@ void MainWindow::ParseIA(QByteArray line)
     QList<QByteArray> tokens = line.split(' ');
 
     if(tokens.size() == 1 && line.startsWith("START")) {
-        chrono->start(1000);
+        chronoTimer->start(1000);
         matchStart.start();
         RefreshChrono();
     }
     else if(tokens.size() == 1 && line.startsWith("STOP")) {
-        if(chrono->isActive())
+        if(chronoTimer->isActive())
             RefreshChrono();
-        chrono->stop();
+        chronoTimer->stop();
     }
+}
+
+void MainWindow::RefreshBattery()
+{
+    WriteCAN("BATTERY REQUEST");
 }
 
 void MainWindow::RefreshChrono()
 {
     int remaining = (90 - matchStart.elapsed() / 1000);
-    qDebug() << remaining;
     ui->chrono->display(remaining);
 }
 

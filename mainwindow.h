@@ -57,6 +57,7 @@ public slots:
     void VueMatch();
 
 
+    void RefreshBattery();
     void RefreshChrono();
 
 private:
@@ -71,7 +72,8 @@ private:
     static const qreal scale = 320. / 3000.;
     static QPointF origin;
 
-    QTimer *chrono;
+    QTimer *batteryTimer;
+    QTimer *chronoTimer;
     QTime matchStart;
 
     void WriteIA(QByteArray line);

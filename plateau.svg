@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="172.78341"
-     inkscape:cy="102.78235"
+     inkscape:cx="178.05865"
+     inkscape:cy="98.800767"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -41,7 +41,8 @@
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     units="px" />
   <defs
      id="defs4">
     <marker
@@ -95,124 +96,15 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(0,-852.36218)"
+     transform="translate(0,-852.36214)"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Calque 1">
-    <path
-       inkscape:connector-curvature="0"
-       id="path3830-0"
-       d="m 580,1052.3622 c 0,-16.5685 -13.43146,-30 -30,-30 -16.56854,0 -30,13.4315 -30,30 l 60,0 z"
-       style="fill:#ffffff;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       style="fill:#ffffff;fill-opacity:1;stroke:none"
-       d="m 400,852.36218 0,149.09062 40.0312,0 -6.63125,-149.09062 z"
-       id="path4143-1"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccc"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       sodipodi:nodetypes="ccccc"
-       inkscape:connector-curvature="0"
-       id="path4139-7"
-       d="m 700,852.3622 0,148.9513 -40.03906,0 L 666.6,852.36218 z"
-       style="fill:#ffffff;fill-opacity:1;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-913.36224"
-       x="-432.5"
-       height="61"
-       width="32.5"
-       id="rect3868-7-2"
-       style="opacity:0.5;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-913.36212"
-       x="-700"
-       height="61"
-       width="32.5"
-       id="rect3868-0"
-       style="opacity:0.5;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       sodipodi:nodetypes="ccc"
-       inkscape:connector-curvature="0"
-       id="path3870-2-1"
-       d="m 450,1007.3622 15,0 0,-155.00002"
-       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       sodipodi:nodetypes="ccc"
-       inkscape:connector-curvature="0"
-       id="path3870-5"
-       d="m 650,1007.3622 -15,0 0,-155.00002"
-       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       id="rect3808-7"
-       width="50"
-       height="50"
-       x="-700"
-       y="-1052.3622"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       id="rect3808-9-0"
-       width="50"
-       height="50"
-       x="-450"
-       y="-1052.3622"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path3828-4"
-       d="m 590,1052.3622 c 0,-22.0914 -17.90861,-40 -40,-40 -22.09139,0 -40,17.9086 -40,40 l 80,0 z"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       sodipodi:type="arc"
-       style="fill:#ffffff;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none"
-       id="path3830-3-3-3-6"
-       sodipodi:cx="149.75"
-       sodipodi:cy="887.11218"
-       sodipodi:rx="31.75"
-       sodipodi:ry="31.75"
-       d="m 181.5,887.11218 c 0,17.53504 -14.21496,31.75 -31.75,31.75 -17.53504,0 -31.75,-14.21496 -31.75,-31.75 0,-17.53504 14.21496,-31.75 31.75,-31.75 17.53504,0 31.75,14.21496 31.75,31.75 z"
-       transform="matrix(-0.23622047,0,0,-0.23622047,585.37402,1161.9163)"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
     <rect
        transform="scale(-1,-1)"
        y="-1052.3622"
@@ -484,192 +376,5 @@
        inkscape:export-filename="/home/martin/Eurobot/ARM/pictures/plateau.png"
        inkscape:export-xdpi="61"
        inkscape:export-ydpi="61" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-1052.3622"
-       x="-700"
-       height="200"
-       width="300"
-       id="rect3020-1"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path3828-6-1"
-       d="m 590,982.3622 c 16.56854,0 30,-13.43146 30,-30 0,-16.56854 -13.43146,-30 -30,-30 -4.76403,0 -9.27893,1.11806 -13.28125,3.09375 -7.91016,4.40413 -17.02277,6.90625 -26.71875,6.90625 -9.69598,0 -18.80859,-2.50212 -26.71875,-6.90625 -4.00232,-1.97569 -8.51722,-3.09375 -13.28125,-3.09375 -16.56854,0 -30,13.43146 -30,30 0,16.56854 13.43146,30 30,30 4.76403,0 9.27893,-1.11806 13.28125,-3.09375 7.91016,-4.40413 17.02277,-6.90625 26.71875,-6.90625 9.69598,0 18.80859,2.50212 26.71875,6.90625 4.00232,1.97569 8.51722,3.09375 13.28125,3.09375 z"
-       style="fill:#cccccc;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       sodipodi:type="arc"
-       style="fill:#999999;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none"
-       id="path3830-3-1"
-       sodipodi:cx="149.75"
-       sodipodi:cy="887.11218"
-       sodipodi:rx="31.75"
-       sodipodi:ry="31.75"
-       d="m 181.5,887.11218 c 0,17.53504 -14.21496,31.75 -31.75,31.75 -17.53504,0 -31.75,-14.21496 -31.75,-31.75 0,-17.53504 14.21496,-31.75 31.75,-31.75 17.53504,0 31.75,14.21496 31.75,31.75 z"
-       transform="matrix(-0.62992126,0,0,-0.62992126,684.33071,1511.173)"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       sodipodi:type="arc"
-       style="fill:#999999;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none"
-       id="path3830-3-3-8"
-       sodipodi:cx="149.75"
-       sodipodi:cy="887.11218"
-       sodipodi:rx="31.75"
-       sodipodi:ry="31.75"
-       d="m 181.5,887.11218 c 0,17.53504 -14.21496,31.75 -31.75,31.75 -17.53504,0 -31.75,-14.21496 -31.75,-31.75 0,-17.53504 14.21496,-31.75 31.75,-31.75 17.53504,0 31.75,14.21496 31.75,31.75 z"
-       transform="matrix(-0.62992126,0,0,-0.62992126,604.33071,1511.173)"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       ry="0"
-       y="-1002.3622"
-       x="-700"
-       height="1.8"
-       width="40"
-       id="rect3995-6"
-       style="fill:#000000;fill-opacity:1;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       ry="0"
-       y="-1002.3622"
-       x="-440"
-       height="1.8"
-       width="40"
-       id="rect3995-3-2"
-       style="fill:#000000;fill-opacity:1;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       inkscape:transform-center-y="37.459871"
-       transform="matrix(-0.04625884,0.99892949,-0.99892949,-0.04625884,0,0)"
-       inkscape:transform-center-x="1.7347172"
-       ry="0"
-       y="-706.2157"
-       x="820.61365"
-       height="1.8"
-       width="75"
-       id="rect3995-2-1"
-       style="fill:#000000;fill-opacity:1;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-854.56213"
-       x="-590.5"
-       height="2.2"
-       width="2.2"
-       id="rect4033-9"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-854.56213"
-       x="-636.10004"
-       height="2.2"
-       width="2.2"
-       id="rect4033-4-6"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(1,-1)"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       id="rect4062-4"
-       width="2.2"
-       height="2.2"
-       x="509.5"
-       y="-854.56213"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(1,-1)"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       id="rect4064-8"
-       width="2.2"
-       height="2.2"
-       x="463.89999"
-       y="-854.56213"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-964.86218"
-       x="-602.5"
-       height="25"
-       width="25"
-       id="rect4119-0"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-964.86218"
-       x="-522.5"
-       height="25"
-       width="25"
-       id="rect4119-3-8"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       style="fill:#000000;fill-opacity:1;stroke:none"
-       id="rect4147-1"
-       width="75"
-       height="1.8"
-       x="871.49823"
-       y="392.60675"
-       ry="0"
-       inkscape:transform-center-x="-1.7347082"
-       transform="matrix(0.04625884,0.99892949,0.99892949,-0.04625884,0,0)"
-       inkscape:transform-center-y="37.459782"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <rect
-       transform="scale(-1,-1)"
-       y="-1052.3622"
-       x="-570"
-       height="3"
-       width="40"
-       id="rect4494-2"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
-    <path
-       transform="matrix(-0.06299213,0,0,-0.06299213,559.43307,1008.2433)"
-       d="m 181.5,887.11218 c 0,17.53504 -14.21496,31.75 -31.75,31.75 -17.53504,0 -31.75,-14.21496 -31.75,-31.75 0,-17.53504 14.21496,-31.75 31.75,-31.75 17.53504,0 31.75,14.21496 31.75,31.75 z"
-       sodipodi:ry="31.75"
-       sodipodi:rx="31.75"
-       sodipodi:cy="887.11218"
-       sodipodi:cx="149.75"
-       id="path4398"
-       style="fill:#000000;fill-opacity:0.94117647;fill-rule:evenodd;stroke:none"
-       sodipodi:type="arc"
-       inkscape:export-filename="/home/martin/Eurobot/ARM/obstacles.png"
-       inkscape:export-xdpi="191.19403"
-       inkscape:export-ydpi="191.19403" />
   </g>
 </svg>
