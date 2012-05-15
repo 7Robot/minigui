@@ -41,8 +41,6 @@ public slots:
     void Cmd1();
     void Cmd2();
     void Cmd3();
-    void Cmd4();
-    void Cmd5();
     void InitRed();
     void InitViolet();
     void RestartIA();
@@ -76,7 +74,8 @@ public slots:
     void ReadTheirCAN();
 
     void RefreshChrono();
-    void CleanEchos();
+    void CleanOurEchos();
+    void CleanTheirEchos();
 
 private:
     Ui::MainWindow *ui;
@@ -100,11 +99,12 @@ private:
 
     QTimer *batteryTimer;
     QTimer *chronoTimer;
-    QTimer *cleanEchosTimer;
+    QTimer *ourEchoTimer;
+    QTimer *theirEchoTimer;
     QTime matchStart;
 
     void RefreshRobot(QList<QByteArray> tokens, QGraphicsPixmapItem *robot);
-    void RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4]);
+    void RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4], QTimer *timer);
 
     void BasculerVue(int vue);
 

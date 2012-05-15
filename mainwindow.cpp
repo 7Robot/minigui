@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString host = QHostInfo::localHostName();
-    if(host != "gros") {
+    if(host == "gros") {
         ourRobotName = "petit"; // Par défaut
         theirRobotName = "gros";
     }
@@ -102,16 +102,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ////////////////////////////////////
 
 
-    cleanEchosTimer = new QTimer(this);
-    cleanEchosTimer->setSingleShot(true);
-    connect(cleanEchosTimer, SIGNAL(timeout()), this, SLOT(CleanEchos()));
+    ourEchoTimer = new QTimer(this);
+    ourEchoTimer->setSingleShot(true);
+    connect(ourEchoTimer, SIGNAL(timeout()), this, SLOT(CleanOurEchos()));
+    theirEchoTimer = new QTimer(this);
+    theirEchoTimer->setSingleShot(true);
+    connect(theirEchoTimer, SIGNAL(timeout()), this, SLOT(CleanTheirEchos()));
 
     chronoTimer = new QTimer(this);
     connect(chronoTimer, SIGNAL(timeout()), this, SLOT(RefreshChrono()));
 
     batteryTimer = new QTimer(this);
     connect(batteryTimer, SIGNAL(timeout()), this, SLOT(FileBattery()));
-
     batteryTimer->start(30000);
     FileBattery(); // Actualise le niveau batterie toutes les 30 secondes.
 
@@ -156,7 +158,7 @@ void MainWindow::RefreshRobot(QList<QByteArray> tokens, QGraphicsPixmapItem *rob
 }
 
 
-void MainWindow::RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4])
+void MainWindow::RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4], QTimer *timer)
 {
     //if(robot->isVisible() == false)
     //{
@@ -183,13 +185,20 @@ void MainWindow::RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *rob
         }
     }
 
-    cleanEchosTimer->start(1000); // On efface les vieux echos automatiquement.
+    timer->start(1000); // On efface les vieux echos automatiquement.
 }
 
-void MainWindow::CleanEchos()
+void MainWindow::CleanOurEchos()
 {
     for(int i = 0; i < 3; i++) {
         ourEchos[i]->hide();
+    }
+}
+
+void MainWindow::CleanTheirEchos()
+{
+    for(int i = 0; i < 3; i++) {
+        theirEchos[i]->hide();
     }
 }
 
@@ -219,12 +228,13 @@ void MainWindow::ParseCAN(QByteArray line)
     }
     else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
         // Actualisation du radar.
-        RefreshEchos(tokens, ourRobot, ourEchos);
+        RefreshEchos(tokens, ourRobot, ourEchos, ourEchoTimer);
     }
     else if(tokens.size() == 3 && tokens.at(0) == "BATTERY" && tokens.at(1) ==  "ANSWER") {
-        QByteArray voltage = tokens.at(2);
-        voltage.append(" V");
-        ui->actionBattery->setText(voltage);
+        float voltage = tokens.at(2).toFloat();
+
+        batteryTimer->start(30000); // Remet à zéro la temporisation.
+        ui->actionBattery->setText(QString::number(voltage, 'f', 1 /*décimales*/).append(" V"));
     }
 }
 
@@ -281,7 +291,7 @@ void MainWindow::ReadTheirCAN()
     }
     else if(tokens.size() > 2 && tokens.at(0) == "TURRET" && tokens.at(1) == "ANSWER") {
         // Actualisation du radar.
-        RefreshEchos(tokens, theirRobot, theirEchos);
+        RefreshEchos(tokens, theirRobot, theirEchos, theirEchoTimer);
     }
 }
 
@@ -389,15 +399,6 @@ void MainWindow::Cmd3()
     WriteIA("CMD3");
 }
 
-void MainWindow::Cmd4()
-{
-    WriteIA("CMD4");
-}
-
-void MainWindow::Cmd5()
-{
-    WriteIA("CMD5");
-}
 
 void MainWindow::InitRed()
 {
@@ -422,7 +423,7 @@ void MainWindow::RestartIA()
         WriteIA("restart ia");
 
         QProcess kill;
-        kill.start("killall python"); // Ne marche pas si l'IA tourne à distance.
+        kill.start("killall -9 python3"); // Ne marche pas si l'IA tourne à distance.
         qDebug() << "killall: " << kill.waitForFinished(1000);
 
         QProcess ia;

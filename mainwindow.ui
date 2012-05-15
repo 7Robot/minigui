@@ -1107,7 +1107,6 @@ CT</string>
     <addaction name="actionRotNeg360"/>
     <addaction name="actionDistPos"/>
     <addaction name="actionDistNeg"/>
-    <addaction name="actionJoystick"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -1143,8 +1142,6 @@ CT</string>
     <addaction name="actionCmd1"/>
     <addaction name="actionCmd2"/>
     <addaction name="actionCmd3"/>
-    <addaction name="actionCmd4"/>
-    <addaction name="actionCmd5"/>
     <addaction name="separator"/>
     <addaction name="actionInit_Red"/>
     <addaction name="actionInit_Violet"/>
@@ -1583,38 +1580,6 @@ CT</string>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>Cmd3()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionCmd4</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>Cmd4()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionCmd5</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>Cmd5()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -2117,8 +2082,6 @@ CT</string>
   <slot>Cmd1()</slot>
   <slot>Cmd2()</slot>
   <slot>Cmd3()</slot>
-  <slot>Cmd4()</slot>
-  <slot>Cmd5()</slot>
   <slot>OdoMute()</slot>
   <slot>OdoUnmute()</slot>
   <slot>OdoRouge()</slot>
