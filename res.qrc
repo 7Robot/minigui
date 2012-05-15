@@ -2,9 +2,7 @@
     <qresource prefix="/pics">
         <file>plateau.png</file>
         <file>battery.png</file>
-        <file>robot.png</file>
         <file>gros.png</file>
         <file>petit.png</file>
-        <file>joystick.png</file>
     </qresource>
 </RCC>

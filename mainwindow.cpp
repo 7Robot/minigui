@@ -448,7 +448,7 @@ void MainWindow::RestartIA()
 
         QProcess ia;
         ia.processEnvironment().insert("PYTHONPATH", "/home/ia");
-        ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName));
+        ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName), "/home/ia");
 
         // Affiche à nouveau le choix de coté.
         ui->initRed->show();
