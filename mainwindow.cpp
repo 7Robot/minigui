@@ -397,11 +397,6 @@ void MainWindow::TourelleOff()
 void MainWindow::Cmd1()
 {
     WriteIA("CMD1");
-
-    QProcess alarme;
-    alarme.startDetached("beeper", QStringList() << "200" << "300" << "0" << "300"
-                       << "200" << "300" << "0" << "300"
-                       << "200" << "300");
 }
 
 void MainWindow::Cmd2()
