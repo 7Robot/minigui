@@ -413,6 +413,11 @@ void MainWindow::Cmd3()
 void MainWindow::InitRed()
 {
     WriteIA("INIT RED");
+
+    QPalette p = QApplication::palette();
+    p.setBrush(QPalette::Window, ui->initRed->palette().light());
+    ui->match->setPalette(p);
+
     ui->initRed->hide();
     ui->initViolet->hide();
 }
@@ -420,6 +425,11 @@ void MainWindow::InitRed()
 void MainWindow::InitViolet()
 {
     WriteIA("INIT VIOLET");
+
+    QPalette p = QApplication::palette();
+    p.setBrush(QPalette::Window, ui->initViolet->palette().light());
+    ui->match->setPalette(p);
+
     ui->initRed->hide();
     ui->initViolet->hide();
 }
@@ -437,11 +447,15 @@ void MainWindow::RestartIA()
         qDebug() << "killall: " << kill.waitForFinished(1000);
 
         QProcess ia;
+        ia.processEnvironment().insert("PYTHONPATH", "/home/ia");
         ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName));
 
         // Affiche à nouveau le choix de coté.
         ui->initRed->show();
         ui->initViolet->show();
+
+        QPalette p = QApplication::palette();
+        ui->match->setPalette(p); // Dégage la couleur de fond.
     }
 }
 
