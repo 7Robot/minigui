@@ -118,6 +118,9 @@ MainWindow::MainWindow(QWidget *parent) :
     FileBattery(); // Actualise le niveau batterie toutes les 30 secondes.
 
     WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + ourRobotName.toUtf8() + ".");
+
+    QProcess proc;
+    proc.startDetached("beeper", QStringList() << "500 500" << "0 1000" << "500 500");
 }
 
 MainWindow::~MainWindow()
@@ -232,6 +235,14 @@ void MainWindow::ParseCAN(QByteArray line)
     }
     else if(tokens.size() == 3 && tokens.at(0) == "BATTERY" && tokens.at(1) ==  "ANSWER") {
         float voltage = tokens.at(2).toFloat();
+
+        float seuil = (ourRobotName == "petit") ? 12 : 13.5;
+        if(4 < voltage /* présence de batterie */
+                && voltage < seuil)
+        {
+            QProcess proc;
+            proc.startDetached("beeper", QStringList() << "500 500");
+        }
 
         batteryTimer->start(30000); // Remet à zéro la temporisation.
         ui->actionBattery->setText(QString::number(voltage, 'f', 1 /*décimales*/).append(" V"));
@@ -387,6 +398,8 @@ void MainWindow::TourelleOff()
 void MainWindow::Cmd1()
 {
     WriteIA("CMD1");
+
+
 }
 
 void MainWindow::Cmd2()
