@@ -25,12 +25,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString host = QHostInfo::localHostName();
     if(host == "gros") {
-        ourRobotName = "petit"; // Par défaut
-        theirRobotName = "gros";
+        ourRobotName = "gros"; // Par défaut
+        theirRobotName = "petit";
     }
     else {
-        ourRobotName = "gros";
-        theirRobotName = "petit";
+        ourRobotName = "petit";
+        theirRobotName = "gros";
     }
 
     BasculerVue(2);
@@ -118,9 +118,6 @@ MainWindow::MainWindow(QWidget *parent) :
     FileBattery(); // Actualise le niveau batterie toutes les 30 secondes.
 
     WriteIA("MESSAGE minigui started on " + host.toUtf8() + " for " + ourRobotName.toUtf8() + ".");
-
-    QProcess proc;
-    proc.startDetached("beeper", QStringList() << "500 500" << "0 1000" << "500 500");
 }
 
 MainWindow::~MainWindow()
@@ -240,8 +237,10 @@ void MainWindow::ParseCAN(QByteArray line)
         if(4 < voltage /* présence de batterie */
                 && voltage < seuil)
         {
-            QProcess proc;
-            proc.startDetached("beeper", QStringList() << "500 500");
+            QProcess alarme;
+            alarme.startDetached("beeper", QStringList() << "200" << "300" << "0" << "300"
+                               << "200" << "300" << "0" << "300"
+                               << "200" << "300");
         }
 
         batteryTimer->start(30000); // Remet à zéro la temporisation.
@@ -399,7 +398,10 @@ void MainWindow::Cmd1()
 {
     WriteIA("CMD1");
 
-
+    QProcess alarme;
+    alarme.startDetached("beeper", QStringList() << "200" << "300" << "0" << "300"
+                       << "200" << "300" << "0" << "300"
+                       << "200" << "300");
 }
 
 void MainWindow::Cmd2()
