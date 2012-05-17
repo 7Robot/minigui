@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString host = QHostInfo::localHostName();
-    if(host == "gros") {
+    if(true || host == "gros") {
         ourRobotName = "gros"; // Par défaut
         theirRobotName = "petit";
     }
@@ -485,6 +485,7 @@ void MainWindow::RestartIA()
     msgBox.setText("Relancer l'IA ?");
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     if(msgBox.exec() == QMessageBox::Ok) {
+        WriteIA("kill ia");
         WriteIA("restart ia");
 
         QProcess kill;
@@ -492,8 +493,9 @@ void MainWindow::RestartIA()
         qDebug() << "killall: " << kill.waitForFinished(1000);
 
         QProcess ia;
-        ia.processEnvironment().insert("PYTHONPATH", "/home/ia");
-        ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName), "/home/ia");
+        //ia.processEnvironment().insert("PYTHONPATH", "/home/ia");
+        //ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName), "/home/ia");
+        ia.startDetached("/home/ia/run.sh", QStringList(), "/home/ia");
     }
 }
 
