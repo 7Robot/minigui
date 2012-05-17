@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString host = QHostInfo::localHostName();
-    if(true || host == "gros") {
+    if(host == "gros") {
         ourRobotName = "gros"; // Par défaut
         theirRobotName = "petit";
     }
