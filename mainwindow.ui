@@ -1103,11 +1103,11 @@ CT</string>
      <string>IA</string>
     </property>
     <addaction name="actionCmd1"/>
-    <addaction name="actionCmd2"/>
-    <addaction name="actionCmd3"/>
     <addaction name="separator"/>
     <addaction name="actionInit_Red"/>
     <addaction name="actionInit_Violet"/>
+    <addaction name="separator"/>
+    <addaction name="actionKill_IA"/>
     <addaction name="actionRestart_IA"/>
    </widget>
    <widget class="QMenu" name="menuCalib">
@@ -1404,6 +1404,11 @@ CT</string>
     <string>Joystick</string>
    </property>
   </action>
+  <action name="actionKill_IA">
+   <property name="text">
+    <string>Kill IA...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -1511,38 +1516,6 @@ CT</string>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>Cmd1()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionCmd2</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>Cmd2()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>159</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionCmd3</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>Cmd3()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -2019,10 +1992,10 @@ CT</string>
    </hints>
   </connection>
   <connection>
-   <sender>actionJoystick</sender>
-   <signal>toggled(bool)</signal>
+   <sender>actionKill_IA</sender>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>AsservJoystick(bool)</slot>
+   <slot>KillIA()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -2073,5 +2046,6 @@ CT</string>
   <slot>AsservRotNeg360()</slot>
   <slot>AsservRotPos360()</slot>
   <slot>AsservJoystick(bool)</slot>
+  <slot>KillIA()</slot>
  </slots>
 </ui>

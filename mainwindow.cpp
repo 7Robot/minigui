@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     BasculerVue(2);
+    IAKilled(); // On suppose que l'IA est éteinte.
 
     // Préparation de la vue Plateau. */
     QPixmap plateauPix = QPixmap(":/pics/plateau.png");
@@ -284,6 +285,14 @@ void MainWindow::ParseIA(QByteArray line)
     else if(tokens.size() == 2 && tokens.at(0) == "VUE") {
         BasculerVue(tokens.at(1).toInt());
     }
+    else if(tokens.size() == 2 && tokens.at(0) == "KILL" && tokens.at(1) == "IA")
+    {
+        IAKilled();
+    }
+    else if(tokens.size() == 2 && tokens.at(0) == "IA" && tokens.at(1) == "READY")
+    {
+        IAReady();
+    }
 }
 
 
@@ -305,6 +314,27 @@ void MainWindow::ReadTheirCAN()
     }
 }
 
+
+
+void MainWindow::IAKilled()
+{
+    // Cache le choix de coté.
+    ui->initRed->hide();
+    ui->initViolet->hide();
+
+    QPalette p = QApplication::palette();
+    ui->match->setPalette(p); // Dégage la couleur de fond.
+}
+
+void MainWindow::IAReady()
+{
+    // Affiche à nouveau le choix de coté.
+    ui->initRed->show();
+    ui->initViolet->show();
+
+    QPalette p = QApplication::palette();
+    ui->match->setPalette(p); // Dégage la couleur de fond.
+}
 
 
 
@@ -399,6 +429,7 @@ void MainWindow::Cmd1()
     WriteIA("CMD1");
 }
 
+/*
 void MainWindow::Cmd2()
 {
     WriteIA("CMD2");
@@ -408,7 +439,7 @@ void MainWindow::Cmd3()
 {
     WriteIA("CMD3");
 }
-
+*/
 
 void MainWindow::InitRed()
 {
@@ -434,6 +465,20 @@ void MainWindow::InitViolet()
     ui->initViolet->hide();
 }
 
+void MainWindow::KillIA()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Tuer l'IA ?");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    if(msgBox.exec() == QMessageBox::Ok) {
+        WriteIA("kill ia");
+
+        QProcess kill;
+        kill.start("killall -9 python3"); // Ne marche pas si l'IA tourne à distance.
+        qDebug() << "killall: " << kill.waitForFinished(1000);
+    }
+}
+
 void MainWindow::RestartIA()
 {
     QMessageBox msgBox;
@@ -449,16 +494,8 @@ void MainWindow::RestartIA()
         QProcess ia;
         ia.processEnvironment().insert("PYTHONPATH", "/home/ia");
         ia.startDetached("/home/ia/ia.py", QStringList(ourRobotName), "/home/ia");
-
-        // Affiche à nouveau le choix de coté.
-        ui->initRed->show();
-        ui->initViolet->show();
-
-        QPalette p = QApplication::palette();
-        ui->match->setPalette(p); // Dégage la couleur de fond.
     }
 }
-
 
 
 

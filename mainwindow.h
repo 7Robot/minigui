@@ -39,10 +39,11 @@ public slots:
     void TourelleOff();
 
     void Cmd1();
-    void Cmd2();
-    void Cmd3();
+    //void Cmd2();
+    //void Cmd3();
     void InitRed();
     void InitViolet();
+    void KillIA();
     void RestartIA();
 
     void OdoRouge();
@@ -107,6 +108,8 @@ private:
     void RefreshEchos(QList<QByteArray> tokens, QGraphicsPixmapItem *robot, QGraphicsPathItem *echos[4], QTimer *timer);
 
     void BasculerVue(int vue);
+    void IAKilled();
+    void IAReady();
 
     void WriteIA(QByteArray line);
     void ParseIA(QByteArray line);
